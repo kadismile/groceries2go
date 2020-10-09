@@ -31,14 +31,8 @@ function UnauthenticatedApp() {
     
     let {email, password} = values;
     email = "brianking319@gmail.com";
-    password = "111222";
-
+    password = "111222333";
     let x = await login( {email, password});
-
-
-
-    console.log("hello ____", x)
-
   }
   
   
@@ -55,7 +49,7 @@ function UnauthenticatedApp() {
                         <div className="card-body">
                           <div className="text-center mb-4 mt-3">
                             <h3>
-                              <a href="/">CHURCH ADMIN</a>
+                              <a href="/">Groceries_2GO</a>
                             </h3>
                           </div>
                           <form>
