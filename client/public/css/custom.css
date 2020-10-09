@@ -1,0 +1,122 @@
+.card .card-body .mb-3 .ladda-button {
+    background: #346ee0;
+    border-radius: 7px;
+    width: 100%;
+    color: #fff;
+    font-size: 14px;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    line-height: 1.5;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.modal-footer .ladda-button {
+    background-color: #346ee0;
+    border-radius: 7px;
+    color: #fff;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    line-height: 1.5;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.register-user .ladda-button {
+    background-color: #346ee0;
+    border-radius: 7px;
+    color: #fff;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    line-height: 1.5;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    width: 200px;
+    margin: 0 auto;
+    display: block;
+    margin-top: 50px;
+}
+
+.addGroup {
+    display: inline;
+    padding: 3px;
+    margin-left: 4px;
+    text-transform: uppercase;
+}
+
+.addGroup__error {
+    color: red;
+    font-size: 11px;
+}
+
+.form-horizontal .col-form-label {
+    margin-bottom: 0;
+    padding-top: 7px;
+    text-align: right;
+}
+
+.addChurchMember {
+    width: 200px;
+    margin: 0 auto;
+    display: block;
+    margin-top: 50px;
+}
+
+.css-1uccc91-singleValue {
+    color: blue;
+}
+
+.google_autocomplete {
+    background: #fbfbfb;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 92%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    position: absolute;
+    z-index: 1;
+}
+
+.list-search {
+    list-style: none;
+    padding: 6px;
+    border-bottom: 1px solid #efecec;
+    cursor: pointer;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #346de0;
+}
