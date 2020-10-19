@@ -67,9 +67,10 @@ function AddProductVariant(props) {
 
   return (
     props.toggleModal ?
+
       <div id="addGroup" className="modal fade" tabIndex="-1" role="dialog"
            aria-labelledby="addGroupLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div className="modal-dialog" role="document">
+        <div className="modal-dialog modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="addGroupLabel" >ADD PRODUCT VARIANT</h5>
@@ -81,7 +82,30 @@ function AddProductVariant(props) {
 
             <div className="modal-body">
               <form className="needs-validation" noValidate>
+
                 <div className="form-row">
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Large Image</label>
+                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Name" required/>
+                    {errors.name.length > 0 && (
+                      <span className="addGroup__error">{errors.productTypeId}</span>
+                    )}
+                  </div>
+
+
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Medium Image</label>
+                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Price" required/>
+                    {errors.name.length > 0 && (
+                      <span className="addGroup__error">{errors.productTypeId}</span>
+                    )}
+                  </div>
+
+
+                </div>
+
+
+                {/*<div className="form-row">
 
                   <div className="col-md-12 mb-4">
                     <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Name" required/>
@@ -101,6 +125,13 @@ function AddProductVariant(props) {
                     <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Inventory" required/>
                     {errors.name.length > 0 && (
                       <span className="addGroup__error">{errors.name}</span>
+                    )}
+                  </div>
+
+                  <div className="col-md-12 mb-4">
+                    <input type="text" onChange={handleChange} name="code" className="form-control form_name" id="validationCustom01" placeholder="code" required/>
+                    {errors.name.length > 0 && (
+                      <span className="addGroup__error">{errors.code}</span>
                     )}
                   </div>
 
@@ -134,7 +165,7 @@ function AddProductVariant(props) {
                       <span className="addGroup__error">{errors.name}</span>
                     )}
                   </div>
-                </div>
+                </div>*/}
 
               </form>
             </div>

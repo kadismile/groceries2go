@@ -41,14 +41,15 @@ function AddProduct() {
     categoryId: [],
     category: "",
     productVariants: [],
-    submitForm: true,
 
     errors: {
       name: "",
       description: "",
+      productTypeId: [],
       productType: "",
+      categoryId: [],
       category: "",
-      productVariants: []
+      productVariants: [],
     }});
   const [showModal, setShowModal] = useState(false);
 
@@ -56,15 +57,13 @@ function AddProduct() {
     return {value: pt.name, label: pt.name, id: pt._id}
   });
   const categoryOptions = categories.map((cat)=> {
-    return {value: cat.name, label: cat.name, id: cat._id}
+    return { value: cat.name, label: cat.name, id: cat._id }
   });
 
   const disableForm = () => {
-    let newValues = {...formValues, ...formValues.address};
+    let newValues = { ...formValues, ...formValues.address };
     delete newValues.errors;
     delete newValues.loading;
-    delete newValues.submitForm;
-    delete newValues.address;
 
     let isError = false;
     for (let val of Object.values(newValues)) {
@@ -73,21 +72,25 @@ function AddProduct() {
       }
     }
 
-    if (isError === true && formValues.submitForm === true) {
-      console.log("Form is not Valid!");
-      return  true
-    }
-
-    if (isError === false && formValues.submitForm === true ) {
+    if (isError === true && submitForm === true) {
       console.log("Form is not Valid!");
       return true
     }
 
-    if (isError === true && formValues.submitForm === false ) {
+    if (isError === false && submitForm === false) {
       console.log("Form is not Valid!");
       return true
     }
-    if (isError === false && formValues.submitForm === false ) {
+
+    if (isError === true && submitForm === false) {
+      console.log("Form is not Valid!");
+      return true
+    }
+    if (!formValues.productVariants.length || !formValues.productTypeId.length || !formValues.categoryId.length) {
+      console.log("Form is not Valid!");
+      return true
+    }
+    if (isError === false && submitForm === false) {
       console.log("Form is Valid!");
       return false
     }
@@ -110,40 +113,23 @@ function AddProduct() {
   const handleSubmit = async (e) => {
     const {errors} = formValues;
     e.preventDefault();
-    setFormValues(prevState => {
-      return {
-        ...prevState,
-        loading: true
-      }
-    });
+    setLoading(true)
 
     let newValues = {...formValues,};
     delete newValues.errors;
     delete newValues.loading;
     delete newValues.submitForm;
     const data = await registerUser(newValues);
-    setFormValues(prevState => {
-      return {...prevState, loading: false}
-    });
+    setLoading(false)
 
     console.log("DATA +++ DATA ", data)
     if (data.success === false) {
       toastr.error(data.error);
-      setFormValues(prevState => {
-        return {
-          ...prevState,
-          loading: false
-        }
-      });
+      setLoading(false)
     }
     if (data.success === "Success") {
       toastr.success("church member added successfully");
-      setFormValues(prevState => {
-        return {
-          ...prevState,
-          loading: false
-        }
-      });
+      setLoading(false)
       return <Redirect to="/church-members" />
       /*histoy.push({
         pathname: '/church-members'
@@ -155,14 +141,40 @@ function AddProduct() {
     switch (name) {
       case "name":
         errors.name = "";
-        if (value.length && value.length <= 3) {
-          errors.name = "name must be more than 3 characters long!";
+        if (value.length === 3 && value.length <= 3) {
+          errors.name = "name of product must be more than 3 characters long!";
           setSubmitForm(false);
         } else {
           setSubmitForm(true);
         }
         return errors.name;
-
+      case "description":
+        errors.description = "";
+        if (value.length === 3 && value.length <= 3) {
+          errors.description = "description of product must be more than 3 characters long!";
+          setSubmitForm(false);
+        } else {
+          setSubmitForm(true);
+        }
+        return errors.description;
+      case "productTypeId":
+        errors.productTypeId = "";
+        if (!value.length) {
+          errors.productTypeId = "product type can't be empty";
+          setSubmitForm(false);
+        } else {
+          setSubmitForm(true);
+        }
+        return errors.productTypeId;
+      case "categoryId":
+        errors.categoryId = "";
+        if (!value.length) {
+          errors.name = "category can't be empty";
+          setSubmitForm(false);
+        } else {
+          setSubmitForm(true);
+        }
+        return errors.categoryId;
       default:
         setSubmitForm(false);
         break;
@@ -224,14 +236,33 @@ function AddProduct() {
                       <div className="col-md-12 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Description</label>
                         <input type="text" onChange={handleChange} name="description" className="form-control" id="colFormLabel"/>
-                        {errors.name.length > 0 && (
+                        {errors.description.length > 0 && (
                           <span className="addGroup__error">{errors.description}</span>
                         )}
                       </div>
 
                     </div>
 
+                    <div className="form-row">
+                      <div className="col-md-6 mb-3">
+                        <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Large Image</label>
+                        <input type="file" className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                        {errors.name.length > 0 && (
+                          <span className="addGroup__error">{errors.productTypeId}</span>
+                        )}
+                      </div>
 
+
+                      <div className="col-md-6 mb-3">
+                        <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Medium Image</label>
+                        <input type="file" className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                        {errors.name.length > 0 && (
+                          <span className="addGroup__error">{errors.productTypeId}</span>
+                        )}
+                      </div>
+
+
+                    </div>
 
                     <div className="form-row">
                       <div className="col-md-6 mb-3">
@@ -254,7 +285,7 @@ function AddProduct() {
                           options={productTypeOptions}
                           name="productTypeId"
                         />
-                        {errors.name.length > 0 && (
+                        {errors.productTypeId.length > 0 && (
                           <span className="addGroup__error">{errors.productTypeId}</span>
                         )}
                       </div>
@@ -279,7 +310,7 @@ function AddProduct() {
                           options={categoryOptions}
                           name="categoryId"
                         />
-                        {errors.name.length > 0 && (
+                        {errors.categoryId.length > 0 && (
                           <span className="addGroup__error">{errors.categoryId}</span>
                         )}
                       </div>
@@ -287,144 +318,32 @@ function AddProduct() {
 
                     </div>
 
-                    <div className="form-row">
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Large Image</label>
-                        <input type="file" className="dropify" data-height="300" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                        {errors.name.length > 0 && (
-                          <span className="addGroup__error">{errors.productTypeId}</span>
-                        )}
-                      </div>
 
-
-                        <div className="col-md-6 mb-3">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Medium Image</label>
-                          <input type="file" className="dropify" data-height="300" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                          {errors.name.length > 0 && (
-                            <span className="addGroup__error">{errors.productTypeId}</span>
-                          )}
-                        </div>
-
-
-                    </div>
 
                     <button type="button" onClick={e => { setShowModal(true) }}  className="btn btn-success waves-effect waves-light" style={{float: "right"}}> <i className='bx bx-plus'></i> Add Variant </button>
 
 
                     <br/>
                     <br/>
-                    <button type="button" className="btn btn-success btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px"}}> Submit </button>
+
+                    {
+                      !disableForm() ?
+                      <button type="button" className="btn btn-primary btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px"}}> Submit </button> :
+                      <button type="button" disabled className="btn btn-secondary btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px"}}> Submit </button>
+
+                    }
+
+                    {
+                      loading ?
+                      <button type="button" className="btn btn-primary btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}> Submit ..... </button>
+                       : ""
+                    }
 
                   </form>
                 </div> {/* end card-body*/}
               </div> {/* end card*/}
             </div> {/* end col */}
           </div>
-
-
-
-          {/*<div className="row">
-            <div className="col-12">
-
-
-              <div className="card">
-                <div className="card-body" style={{ padding: "4.25rem"}}>
-
-                  <form className="form-horizontal">
-                    <div className="row">
-                      <div className="col-md-12">
-                        <div className="form-group row">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label">Product Name</label>
-                          <div className="col-sm-8 mb-2">
-                            <input type="text" onChange={handleChange} name="name" className="form-control" id="colFormLabel" placeholder="Product Name"/>
-                            {errors.name.length > 0 && (
-                              <span className="addGroup__error">{errors.name}</span>
-                            )}
-                          </div>
-                        </div>
-
-                      </div>
-
-                      <div className="col-md-12">
-                        <div className="form-group row">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label">Product Description</label>
-                          <div className="col-sm-8 mb-2">
-                            <input type="text" onChange={handleChange} name="name" className="form-control" id="colFormLabel" placeholder="Product Description"/>
-                            {errors.name.length > 0 && (
-                              <span className="addGroup__error">{errors.name}</span>
-                            )}
-                          </div>
-                        </div>
-
-                      </div>
-
-                      <div className="col-md-12">
-                        <div className="form-group row">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label">Tags</label>
-                          <div className="col-sm-8 mb-2">
-                            <input type="text" onChange={handleChange} name="name" className="form-control" id="colFormLabel" placeholder="vintage, cotton,"/>
-                            {errors.name.length > 0 && (
-                              <span className="addGroup__error">{errors.name}</span>
-                            )}
-                          </div>
-                        </div>
-
-                      </div>
-
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="form-group row">
-                            <label htmlFor="colFormLabel" className="col-form-label">Brand</label>
-                            <div className="col-sm-6 mb-2">
-                              <input type="text" onChange={handleChange} name="name" className="form-control" id="colFormLabel" placeholder="vintage, cotton,"/>
-                              {errors.name.length > 0 && (
-                                <span className="addGroup__error">{errors.name}</span>
-                              )}
-                            </div>
-                          </div>
-
-                        </div>
-
-                        <div className="col-md-6">
-                          <div className="form-group row">
-                            <label htmlFor="colFormLabel" className=" col-form-label">Category</label>
-                            <div className="col-sm-6 mb-2">
-                              <input type="text" onChange={handleChange} name="name" className="form-control" id="colFormLabel" placeholder="vintage, cotton,"/>
-                              {errors.name.length > 0 && (
-                                <span className="addGroup__error">{errors.name}</span>
-                              )}
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-
-                      <div className="register-user col-md-12 col-md-offset-4 pull-right">
-                        <LaddaButton
-                          loading={loading}
-                          disabled={disableForm()}
-                          onClick={handleSubmit}
-                          data-size={XXL}
-                          data-style={SLIDE_UP}
-                          data-spinner-size={30}
-                          data-spinner-color="#ddd"
-                          data-spinner-lines={12}
-                        >
-                          Submit
-                        </LaddaButton>
-
-                         <button type="submit" className="btn btn-primary waves-effect waves-light addChurchMember">Submit</button>
-                      </div>
-                    </div>
-
-                  </form>
-
-                </div>
-              </div>
-
-            </div>
-
-          </div>*/}
 
         </div>
 
