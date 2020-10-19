@@ -12,8 +12,8 @@ import {
 import {ErrorBoundary} from 'react-error-boundary'
 import {ErrorMessage,} from './components/lib'
 import {Home} from './pages/home'
-import {AddChurchMember} from './pages/church_members/add_church_member'
-import {AddGroupModal} from './components/modals/add_group'
+import {AddProduct} from './pages/products/add_products'
+import {AddGroupModal} from './components/modals/add_category'
 import {NotFoud} from './components/404'
 import {Header} from "./components/header";
 import {SideBar} from "./components/sidebar";
@@ -44,7 +44,7 @@ function AuthenticatedApp() {
           <Route render={props => <SideBar {...props} />} />
           <Switch>
             <Route path="/" exact render={props => <Home {...props} />} />
-            <Route path="/add-church-member" exact render={props => <AddChurchMember {...props} />} />
+            <Route path="/add-product" exact render={props => <AddProduct {...props} />} />
             <Route path="/church-members" exact render={props => <ChurchMemberList {...props} />} />
             <Route path="/add-group" exact render={props => <AddGroupModal {...props} />} />
             <Route path="*" exact render={props => <NotFoud {...props} />} />

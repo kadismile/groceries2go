@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 var randomstring = require("randomstring");
 
-const CategorySchema = mongoose.Schema({
+const ProductTypeSchema = mongoose.Schema({
   _id: {
     type: String,
-    default: function() {
-      return randomstring.generate(18);
-    }
+    default: randomstring.generate(18)
   },
   name: {
     type: String,
@@ -16,7 +14,11 @@ const CategorySchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  },
 },{versionKey: false});
 
 //module.exports = CategorySchema;
-module.exports = mongoose.model('Category', CategorySchema);
+module.exports = mongoose.model('ProductType', ProductTypeSchema);

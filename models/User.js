@@ -4,7 +4,6 @@ const {UserBeforeSave, UserAfterUpdate} = require('./hooks/user_hooks');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
-const DocumentNumber = require('./DocumentNumber');
 
 const addressSchema = mongoose.Schema({
   _id: {

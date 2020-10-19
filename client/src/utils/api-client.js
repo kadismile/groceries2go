@@ -35,8 +35,8 @@ async function client(
     .then(async response => {
       return await response.json()
     }).catch((err)=>{
-       logout();
-       window.location.replace("/");
+       //logout();
+       //window.location.replace("/");
       })
 }
 
