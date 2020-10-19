@@ -43,7 +43,29 @@ function getCategory() {
   if (!token) {
     return Promise.resolve(null)
   }
-  return client(`${url.BASE_URL}/users/category`).then(data => data)
+  return client(`${url.BASE_URL}/products/category`).then(data => data)
+}
+function createCategory(data) {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/category/create`, {data}).then(data => data)
+}
+
+function createProductType(data) {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/product-type/create`, {data}).then(data => data)
+}
+function getProductType() {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/product-type`).then(data => data)
 }
 
 function getAllUsers() {
@@ -53,15 +75,6 @@ function getAllUsers() {
   }
   return client(`${url.BASE_URL}/users/all-users`).then(data => data)
 }
-
-function createCategory(data) {
-  const token = getToken();
-  if (!token) {
-    return Promise.resolve(null)
-  }
-  return client(`${url.BASE_URL}/users/category`, {data}).then(data => data)
-}
-
 function registerUser(data) {
   const token = getToken();
   if (!token) {
@@ -89,5 +102,6 @@ function logout() {
 }
 
 
-export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,registerUser, getAllUsers}
+export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,registerUser, getAllUsers,
+  getProductType, createProductType}
 export {logout} from './api-client'

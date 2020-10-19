@@ -1,15 +1,18 @@
 import React, {useState} from 'react'
 import {Link } from 'react-router-dom'
 import {useAuth} from '../context/auth-context'
-import {AddGroupModal} from '../components/modals/add_group'
+import {AddGroupModal} from './modals/add_category'
+import {AddProductType} from './modals/add_product-type'
 
 function Header() {
   let {user, logout} = useAuth();
   user = user[0];
   const [showModal, setShowModal] = useState(false);
-  
+  const [showProductType, setShowProductType] = useState(false);
+
   const displayModal = (value) => {
     setShowModal(value)
+    setShowProductType(value)
   };
   
   return (
@@ -33,24 +36,19 @@ function Header() {
               <div className="dropdown-menu">
   
   
-                <Link to="/add-church-member" className="dropdown-item notify-item">
-                  Church Member
+                <Link to="/add-product" className="dropdown-item notify-item">
+                  Product
                 </Link>
   
                 
                 <a href="#" onClick={e => { setShowModal(true) }} className="dropdown-item notify-item">
-                  Group
+                  Category
                 </a>
-              
-                
-                <a href="/#" className="dropdown-item notify-item">
-                  EMS System
+
+                <a href="#" onClick={e => { setShowProductType(true) }} className="dropdown-item notify-item">
+                  Product Type
                 </a>
-              
-             
-                <a href="/#" className="dropdown-item notify-item">
-                  CRM App
-                </a>
+
               </div>
             </div>
           </div>
@@ -178,6 +176,7 @@ function Header() {
         </div>
       </header>
       {showModal ? <AddGroupModal toggleModal={displayModal}/> : ""}
+      {showProductType ? <AddProductType toggleModal={displayModal}/> : ""}
     </>
   )
 }

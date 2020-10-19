@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import { getCategory, createCategory } from '../../../utils/auth-client'
-import {useAuth} from '../../../context/auth-context'
+import { getCategory, createCategory } from '../../utils/auth-client'
+import {useAuth} from '../../context/auth-context'
 import LaddaButton, {SLIDE_UP, XXL} from "react-ladda";
 import toastr from "toastr";
 /**
@@ -9,39 +9,17 @@ import toastr from "toastr";
 function AddGroupModal(props) {
   const $ = window.$;
   const {user} = useAuth();
-  
-  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false)
   const [formValues, setFormValues] = useState({
     name: '',
-    church_group: '',
-    loading: false,
     errors: {
       name: '',
     }});
-  
+
   useEffect(()=> {
       window.$('#addGroup').modal('show');
-    (async function getGrossData() {
-      let data = await getCategory();
-      setCategories(data.data)
-    })();
   }, []);
-  
-  useEffect(()=> {
-    (async function getGrossData() {
-      let data = await getCategory();
-      setCategories(data.data);
-      setTimeout(()=> {
-        setFormValues(prevState => {
-          return {
-            ...prevState,
-            loading: false
-          }
-        });
-      }, 500)
-    })();
-  }, [formValues.loading]);
-  
+
   const closeModal =() => {
     props.toggleModal(false)
   };
@@ -69,37 +47,25 @@ function AddGroupModal(props) {
     });
   };
   
-  const handleSubmit = (e) => {
-  
-    setFormValues(prevState => {
-      return {
-        ...prevState,
-        loading: true
-      }
-    });
+  const handleSubmit = async (e) => {
+
+    setLoading(true)
     e.preventDefault();
     const { name } = formValues;
     if (name.length > 2) {
       const  church_group = user[0].church_group;
-      createCategory( { name, church_group });
-      setFormValues(prevState => {
-        return {...prevState}
-      });
+      await createCategory( { name });
+      setLoading(false)
       $('.form_name').val("");
       toastr.success("category added successfully");
     } else {
       toastr.error("name of category is empty");
-      setFormValues(prevState => {
-        return {
-          ...prevState,
-          loading: false
-        }
-      });
+      setLoading(false)
     }
   };
   
-  const {errors, loading} = formValues;
-  
+  const {errors} = formValues;
+
   return (
       props.toggleModal ?
       <div id="addGroup" className="modal fade" tabIndex="-1" role="dialog"
@@ -107,7 +73,7 @@ function AddGroupModal(props) {
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="addGroupLabel" >ADD A CHURCH GROUP</h5>
+              <h5 className="modal-title" id="addGroupLabel" >ADD A CATEGORY</h5>
               <button type="button" onClick={()=> closeModal() } className="close waves-effect waves-light" data-dismiss="modal"
                       aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -119,7 +85,7 @@ function AddGroupModal(props) {
                 <div className="form-row">
                   
                   <div className="col-md-12 mb-4">
-                    <label htmlFor="validationCustom01">Name of Group</label>
+                    <label htmlFor="validationCustom01">Name of Category</label>
                     <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Name" required/>
                     {errors.name.length > 0 && (
                         <span className="addGroup__error">{errors.name}</span>
@@ -127,10 +93,7 @@ function AddGroupModal(props) {
                   </div>
                  
                 </div>
-                {categories.map((cat, index)=> {
-                  return <div key={index} className="alert alert-warning addGroup" role="alert">{cat.name}</div>
-                })}
-                
+
               </form>
             </div>
             <div className="modal-footer">
@@ -147,7 +110,7 @@ function AddGroupModal(props) {
                   data-spinner-color="#ddd"
                   data-spinner-lines={12}
               >
-                Add Group
+                Add Category
               </LaddaButton>
             </div>
           </div>

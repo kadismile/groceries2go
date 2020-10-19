@@ -23,6 +23,7 @@ app.use('/api/v1/users', require('./routes/users'));
 app.use('/api/v1/church', require('./routes/church'));
 app.use('/api/v1/webhook', require('./routes/webhook'));
 app.use('/api/v1/auth', require('./routes/auth'));
+app.use('/api/v1/products', require('./routes/products'));
 
 
 io.on('connection', (socket) => {
