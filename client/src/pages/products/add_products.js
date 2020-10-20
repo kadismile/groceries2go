@@ -318,14 +318,42 @@ function AddProduct() {
 
                     </div>
 
-
-
+                    <br/>
                     <button type="button" onClick={e => { setShowModal(true) }}  className="btn btn-success waves-effect waves-light" style={{float: "right"}}> <i className='bx bx-plus'></i> Add Variant </button>
 
 
                     <br/>
                     <br/>
 
+                    <div className="col-xl-12">
+                      <div className="card">
+                        <div className="card-body">
+                          <div className="table-responsive">
+                            <table className="table table-borderless mb-0">
+                              <thead className="thead-light">
+                              <tr>
+                                <th>#</th>
+                                <th>Variant Name</th>
+                                <th>Code</th>
+                                <th>Price</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <br/>
+                    <br/>
                     {
                       !disableForm() ?
                       <button type="button" className="btn btn-primary btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px"}}> Submit </button> :

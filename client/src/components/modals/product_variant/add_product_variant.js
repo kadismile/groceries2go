@@ -1,248 +1,264 @@
-import React, {useEffect, useState} from 'react'
-import { createProductType } from '../../../utils/auth-client'
-import {useAuth} from '../../../context/auth-context'
-import LaddaButton, {SLIDE_UP, XXL} from "react-ladda";
+import React, { useEffect, useState } from "react";
+import { createProductType, registerUser } from "../../../utils/auth-client";
+import { useAuth } from "../../../context/auth-context";
+import LaddaButton, { SLIDE_UP, XXL } from "react-ladda";
 import toastr from "toastr";
+import { Redirect } from "react-router-dom";
 /**
  * @return {string}
  */
 function AddProductVariant(props) {
   const $ = window.$;
-  const {user} = useAuth();
-  const [loading, setLoading] = useState(false)
+  const { user } = useAuth();
+  const [submitForm, setSubmitForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
-    name: '',
-    errors: {
-      name: '',
-    }});
+    name: "",
+    price: "",
+    code: "",
+    quantityInCase: "",
+    inventory: "",
+    uom: "",
+    upc: "",
+    errors: {}
+  });
 
-  useEffect(()=> {
-    window.$('#addGroup').modal('show');
+  useEffect(() => {
+    window.$("#addGroup").modal("show");
   }, []);
 
-  const closeModal =() => {
-    props.toggleModal(false)
+  const closeModal = () => {
+    props.toggleModal(false);
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setLoading(true);
+    let errors = formValues.errors;
+    validateForm(errors);
+    for (let val of Object.values(formValues.errors)) {
+      if (val) {
+        setTimeout(()=> setLoading(false), 2000)
+      }
+    }
+    delete formValues.errors
+    let variant = localStorage.getItem("variant")
+    if (!variant) {
+      localStorage.setItem("variant", JSON.stringify([formValues]))
+    } else {
+      variant = [ ...JSON.parse(variant), formValues ]
+      localStorage.setItem("variant", JSON.stringify(variant))
+    }
   };
 
   const handleChange = event => {
     event.preventDefault();
-    const { name, value } = event.target;
+    let { name, value } = event.target;
     let errors = formValues.errors;
-    switch (name) {
-      case "name":
-        errors.name =
-          value.length <= 2
-            ? " product type must be more than 2 characters long!"
-            : "";
-        break;
-      default:
-        break;
-    }
+    errors[name] = "";
     setFormValues(prevState => {
       return {
         ...prevState,
         errors,
         [name]: value
+      };
+    });
+  };
+  const validateForm = errors => {
+    const { name, price, code } = formValues;
+
+    for (let val in formValues) {
+      if (val === "name") {
+        if (name.length <= 3) {
+          errors.name = "variant name must be more than 3 characters long!";
+          setSubmitForm(false);
+        } else {
+          setSubmitForm(true);
+        }
       }
+
+      if (val === "price") {
+        if (!price.length) {
+          errors.price = "price cannot be empty";
+          setSubmitForm(false);
+        } else {
+          setSubmitForm(true);
+        }
+      }
+
+      if (val === "code") {
+        if (!code.length) {
+          errors.code = "code cannot be empty";
+          setSubmitForm(false);
+        } else {
+          setSubmitForm(true);
+        }
+      }
+    }
+
+    setFormValues(prevState => {
+      return {
+        ...prevState,
+        errors
+      };
     });
   };
 
-  const handleSubmit = async (e) => {
-    setLoading(true)
-    e.preventDefault();
-    const { name } = formValues;
-    if (name.length > 2) {
-      let x = await createProductType( { name });
-      console.log("XXXXXX ", x)
-      setLoading(false)
-      $('.form_name').val("");
-      toastr.success("category added successfully");
-    } else {
-      toastr.error("name of category is empty");
-      setLoading(false)
-    }
-  };
+  const { errors } = formValues;
 
-  const {errors} = formValues;
+  return props.toggleModal ? (
+    <div
+      id="addGroup"
+      className="modal fade"
+      tabIndex="-1"
+      role="dialog"
+      aria-labelledby="addGroupLabel"
+      aria-hidden="true"
+      data-backdrop="static"
+      data-keyboard="false"
+    >
+      <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="addGroupLabel">
+              ADD PRODUCT VARIANT
+            </h5>
+            <button
+              type="button"
+              onClick={() => closeModal()}
+              className="close waves-effect waves-light"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
 
-  return (
-    props.toggleModal ?
-
-      <div id="addGroup" className="modal fade" tabIndex="-1" role="dialog"
-           aria-labelledby="addGroupLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div className="modal-dialog modal-lg" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="addGroupLabel" >ADD PRODUCT VARIANT</h5>
-              <button type="button" onClick={()=> closeModal() } className="close waves-effect waves-light" data-dismiss="modal"
-                      aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <form className="needs-validation" noValidate>
-
-                <div className="form-row">
-                  <div className="col-md-6 mb-3">
-                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" placeholder="Name" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.productTypeId}</span>
-                    )}
-                  </div>
-
-
-                  <div className="col-md-6 mb-3">
-                    <input type="text" onChange={handleChange} name="price" className="form-control form_name"  placeholder="Price" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.price}</span>
-                    )}
-                  </div>
-
-
+          <div className="modal-body">
+            <form className="needs-validation" noValidate>
+              <div className="form-row">
+                <div className="col-md-6 mb-3">
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="name"
+                    className="form-control form_name"
+                    placeholder="Name"
+                    required
+                  />
+                  {errors.name && errors.name.length > 0 && (
+                    <span className="addGroup__error">{errors.name}</span>
+                  )}
                 </div>
 
-                <div className="form-row">
-                  <div className="col-md-6 mb-3">
-                    <input type="text" onChange={handleChange} name="code" className="form-control form_name" placeholder="Code" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.productTypeId}</span>
-                    )}
-                  </div>
+                <div className="col-md-6 mb-3">
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="price"
+                    className="form-control form_name"
+                    placeholder="Price"
+                    required
+                  />
+                  {errors.price && errors.price.length > 0 && (
+                    <span className="addGroup__error">{errors.price}</span>
+                  )}
+                </div>
+              </div>
 
-
-                  <div className="col-md-6 mb-3">
-                    <input type="number" onChange={handleChange} name="inventory" className="form-control form_name" id="validationCustom01" placeholder="Inventory" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.productTypeId}</span>
-                    )}
-                  </div>
-
-
+              <div className="form-row">
+                <div className="col-md-6 mb-3">
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="code"
+                    className="form-control form_name"
+                    placeholder="Code"
+                    required
+                  />
+                  {errors.code && errors.code.length > 0 && (
+                    <span className="addGroup__error">{errors.code}</span>
+                  )}
                 </div>
 
-                <br/>
-                <hr/>
-                <h5>Sub Unit</h5>
-                <div className="form-row">
+                <div className="col-md-6 mb-3">
+                  <input
+                    type="number"
+                    onChange={handleChange}
+                    name="inventory"
+                    className="form-control form_name"
+                    id="validationCustom01"
+                    placeholder="Inventory"
+                    required
+                  />
+                </div>
+              </div>
 
-                  <div className="col-md-6 mb-3">
-                    <input type="text" onChange={handleChange} name="inventory" className="form-control form_name" id="validationCustom01" placeholder="Quantity In Case" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.productTypeId}</span>
-                    )}
-                  </div>
-
-                  <div className="col-md-6 mb-3">
-                    <input type="text" onChange={handleChange} name="code" className="form-control form_name" placeholder="UOM" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.productTypeId}</span>
-                    )}
-                  </div>
-
-
+              <br />
+              <hr />
+              <h5>Sub Unit</h5>
+              <div className="form-row">
+                <div className="col-md-6 mb-3">
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="inventory"
+                    className="form-control form_name"
+                    placeholder="Quantity In Case"
+                    required
+                  />
                 </div>
 
-                <div className="form-row">
-
-                  <div className="col-md-6 mb-3">
-                    <input type="text" onChange={handleChange} name="inventory" className="form-control form_name" id="validationCustom01" placeholder="UPC" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.productTypeId}</span>
-                    )}
-                  </div>
-
-
+                <div className="col-md-6 mb-3">
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="code"
+                    className="form-control form_name"
+                    placeholder="UOM"
+                    required
+                  />
                 </div>
+              </div>
 
-
-
-                {/*<div className="form-row">
-
-                  <div className="col-md-12 mb-4">
-                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Name" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.name}</span>
-                    )}
-                  </div>
-
-                  <div className="col-md-12 mb-4">
-                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Price" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.name}</span>
-                    )}
-                  </div>
-
-                  <div className="col-md-12 mb-4">
-                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Inventory" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.name}</span>
-                    )}
-                  </div>
-
-                  <div className="col-md-12 mb-4">
-                    <input type="text" onChange={handleChange} name="code" className="form-control form_name" id="validationCustom01" placeholder="code" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.code}</span>
-                    )}
-                  </div>
-
-                  <br/>
-                  <hr/>
-                  <h5>Sub Unit</h5>
-                  <div className="col-md-12 mb-4">
-                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Name" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.name}</span>
-                    )}
-                  </div>
-
-                  <div className="col-md-12 mb-4">
-                    <input type="number" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="Quantity In Case" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.name}</span>
-                    )}
-                  </div>
-
-                  <div className="col-md-12 mb-4">
-                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="UOM" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.name}</span>
-                    )}
-                  </div>
-
-                  <div className="col-md-12 mb-4">
-                    <input type="text" onChange={handleChange} name="name" className="form-control form_name" id="validationCustom01" placeholder="UPC" required/>
-                    {errors.name.length > 0 && (
-                      <span className="addGroup__error">{errors.name}</span>
-                    )}
-                  </div>
-                </div>*/}
-
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary waves-effect waves-light"
-                      data-dismiss="modal" onClick={()=> closeModal() }>Close
-              </button>
-
-              <LaddaButton
-                loading={loading}
+              <div className="form-row">
+                <div className="col-md-6 mb-3">
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="inventory"
+                    className="form-control form_name"
+                    placeholder="UPC"
+                    required
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div className="modal-footer">
+            {!loading ?
+              <button
+                type="button"
                 onClick={handleSubmit}
-                data-size={XXL}
-                data-style={SLIDE_UP}
-                data-spinner-size={30}
-                data-spinner-color="#ddd"
-                data-spinner-lines={12}
+                className="btn btn-primary btn-large waves-effect waves-light"
+                style={{ margin: "auto", display: "block", width: "200px" }}
               >
                 Add Variant
-              </LaddaButton>
-            </div>
+              </button> :
+              <button type="button"
+                      className="btn btn-primary btn-large waves-effect waves-light"
+                      style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}>
+                Add Variant .....
+              </button>
+            }
+
           </div>
         </div>
-      </div> : ""
-  )
+      </div>
+    </div>
+  ) : (
+    ""
+  );
 }
 
-export {AddProductVariant}
-
+export { AddProductVariant };
