@@ -17,7 +17,6 @@ function AddProduct() {
   const  histoy = useHistory()
   const $ = window.$;
   const {user} = useAuth();
-
   useEffect(()=> {
     $('.dropify').dropify({
       messages: {
@@ -28,8 +27,6 @@ function AddProduct() {
       }
     });
   },[])
-
-  const [submitForm, setSubmitForm] = useState(false)
   const [categories, setCategories] = useState([]);
   const [productType, setProductType] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -41,87 +38,44 @@ function AddProduct() {
     categoryId: [],
     category: "",
     productVariants: [],
-
-    errors: {
-      name: "",
-      description: "",
-      productTypeId: [],
-      productType: "",
-      categoryId: [],
-      category: "",
-      productVariants: [],
-    }});
+    Limage: "",
+    Mimage: "",
+    errors: {}
+  });
   const [showModal, setShowModal] = useState(false);
-
   const productTypeOptions = productType.map((pt)=> {
     return {value: pt.name, label: pt.name, id: pt._id}
   });
   const categoryOptions = categories.map((cat)=> {
     return { value: cat.name, label: cat.name, id: cat._id }
   });
-
-  const disableForm = () => {
-    let newValues = { ...formValues, ...formValues.address };
-    delete newValues.errors;
-    delete newValues.loading;
-
-    let isError = false;
-    for (let val of Object.values(newValues)) {
-      if (val === "") {
-        isError = true
-      }
-    }
-
-    if (isError === true && submitForm === true) {
-      console.log("Form is not Valid!");
-      return true
-    }
-
-    if (isError === false && submitForm === false) {
-      console.log("Form is not Valid!");
-      return true
-    }
-
-    if (isError === true && submitForm === false) {
-      console.log("Form is not Valid!");
-      return true
-    }
-    if (!formValues.productVariants.length || !formValues.productTypeId.length || !formValues.categoryId.length) {
-      console.log("Form is not Valid!");
-      return true
-    }
-    if (isError === false && submitForm === false) {
-      console.log("Form is Valid!");
-      return false
-    }
-  };
-
   const handleChange = event => {
     event.preventDefault();
     let { name, value } = event.target;
     let errors = formValues.errors;
-    validateForm(name, errors, value);
+    errors[name] = "";
     setFormValues(prevState => {
       return {
         ...prevState,
         errors,
         [name]: value
-      }
+      };
     });
   };
-
   const handleSubmit = async (e) => {
-    const {errors} = formValues;
     e.preventDefault();
-    setLoading(true)
-
-    let newValues = {...formValues,};
-    delete newValues.errors;
-    delete newValues.loading;
-    delete newValues.submitForm;
-    const data = await registerUser(newValues);
+    setLoading(true);
+    let errors = formValues.errors;
+    validateForm(errors);
+    for (let val of Object.values(formValues.errors)) {
+      if (val) {
+        setTimeout(()=> setLoading(false), 2000)
+      }
+    }
+    delete formValues.errors
+    return
+    const data = await registerUser(formValues);
     setLoading(false)
-
     console.log("DATA +++ DATA ", data)
     if (data.success === false) {
       toastr.error(data.error);
@@ -136,57 +90,62 @@ function AddProduct() {
       })*/
     }
   }
-
-  const validateForm = (name, errors, value) => {
-    switch (name) {
-      case "name":
-        errors.name = "";
-        if (value.length === 3 && value.length <= 3) {
-          errors.name = "name of product must be more than 3 characters long!";
-          setSubmitForm(false);
-        } else {
-          setSubmitForm(true);
+  const validateForm = errors => {
+    const { name, description, productTypeId, categoryId, Limage, Mimage } = formValues;
+    for (let val in formValues) {
+      if (val === "name") {
+        if (name.length <= 3) {
+          errors.name = "variant name must be more than 3 characters long!";
         }
-        return errors.name;
-      case "description":
-        errors.description = "";
-        if (value.length === 3 && value.length <= 3) {
+      }
+
+      if (val === "description") {
+        if (!description.length) {
           errors.description = "description of product must be more than 3 characters long!";
-          setSubmitForm(false);
-        } else {
-          setSubmitForm(true);
         }
-        return errors.description;
-      case "productTypeId":
-        errors.productTypeId = "";
-        if (!value.length) {
+      }
+
+      if (val === "productTypeId") {
+        if (!productTypeId.length) {
           errors.productTypeId = "product type can't be empty";
-          setSubmitForm(false);
-        } else {
-          setSubmitForm(true);
         }
-        return errors.productTypeId;
-      case "categoryId":
-        errors.categoryId = "";
-        if (!value.length) {
-          errors.name = "category can't be empty";
-          setSubmitForm(false);
-        } else {
-          setSubmitForm(true);
+      }
+
+      if (val === "categoryId") {
+        if (!categoryId.length) {
+          errors.categoryId = "category can't be empty";
         }
-        return errors.categoryId;
-      default:
-        setSubmitForm(false);
-        break;
+      }
+
+      if (val === "Limage") {
+        if (!Limage.length) {
+          errors.Limage = "please upload a Large Image";
+        }
+      }
+
+      if (val === "Mimage") {
+        if (!Mimage.length) {
+          errors.Mimage = "please upload a Medium Image";
+        }
+      }
     }
-
+    setFormValues(prevState => {
+      return {
+        ...prevState,
+        errors
+      };
+    });
   };
-
   const displayModal = (value) => {
     setShowModal(value)
   };
+  const variants = () => {
+    let variant = localStorage.getItem("variant")
+    return JSON.parse(variant) ? JSON.parse(variant) : []
+  }
 
   const { errors} = formValues;
+  const productVariants = variants()
   return (
     <div className="main-content">
 
@@ -225,7 +184,7 @@ function AddProduct() {
                       <div className="col-md-12 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Name</label>
                         <input type="text" onChange={handleChange} name="name" className="form-control" id="colFormLabel"/>
-                        {errors.name.length > 0 && (
+                        {errors.name && errors.name.length > 0 && (
                           <span className="addGroup__error">{errors.name}</span>
                         )}
                       </div>
@@ -236,7 +195,7 @@ function AddProduct() {
                       <div className="col-md-12 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Description</label>
                         <input type="text" onChange={handleChange} name="description" className="form-control" id="colFormLabel"/>
-                        {errors.description.length > 0 && (
+                        {errors.description && errors.description.length > 0 && (
                           <span className="addGroup__error">{errors.description}</span>
                         )}
                       </div>
@@ -247,20 +206,18 @@ function AddProduct() {
                       <div className="col-md-6 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Large Image</label>
                         <input type="file" className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                        {errors.name.length > 0 && (
-                          <span className="addGroup__error">{errors.productTypeId}</span>
+                        {errors.Limage && errors.Limage.length > 0 && (
+                          <span className="addGroup__error">{errors.Limage}</span>
                         )}
                       </div>
-
 
                       <div className="col-md-6 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Medium Image</label>
                         <input type="file" className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                        {errors.name.length > 0 && (
-                          <span className="addGroup__error">{errors.productTypeId}</span>
+                        {errors.Mimage && errors.Mimage.length > 0 && (
+                          <span className="addGroup__error">{errors.Mimage}</span>
                         )}
                       </div>
-
 
                     </div>
 
@@ -285,7 +242,7 @@ function AddProduct() {
                           options={productTypeOptions}
                           name="productTypeId"
                         />
-                        {errors.productTypeId.length > 0 && (
+                        {errors.productTypeId && errors.productTypeId.length > 0 && (
                           <span className="addGroup__error">{errors.productTypeId}</span>
                         )}
                       </div>
@@ -310,7 +267,7 @@ function AddProduct() {
                           options={categoryOptions}
                           name="categoryId"
                         />
-                        {errors.categoryId.length > 0 && (
+                        {errors.categoryId && errors.categoryId.length > 0 && (
                           <span className="addGroup__error">{errors.categoryId}</span>
                         )}
                       </div>
@@ -321,62 +278,73 @@ function AddProduct() {
                     <br/>
                     <button type="button" onClick={e => { setShowModal(true) }}  className="btn btn-success waves-effect waves-light" style={{float: "right"}}> <i className='bx bx-plus'></i> Add Variant </button>
 
-
                     <br/>
                     <br/>
 
-                    <div className="col-xl-12">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="table-responsive">
-                            <table className="table table-borderless mb-0">
-                              <thead className="thead-light">
-                              <tr>
-                                <th>#</th>
-                                <th>Variant Name</th>
-                                <th>Code</th>
-                                <th>Price</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                              </tr>
-                              </tbody>
-                            </table>
+                    {
+                      productVariants.length ?
+                      <div className="col-xl-12">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="table-responsive">
+                              <table className="table table-borderless mb-0">
+                                <thead className="thead-light">
+                                <tr>
+                                  <th>#</th>
+                                  <th>Variant Name</th>
+                                  <th>Code</th>
+                                  <th>Price</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {productVariants.map((variant, index)=> {
+                                  return (
+                                    <tr>
+                                      <th scope="row">{index + 1}</th>
+                                      <td>Mark</td>
+                                      <td>Otto</td>
+                                      <td>@mdo</td>
+                                    </tr>
+                                  )
+                                })}
+
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                      </div> :
+                      ""
+                    }
+
 
                     <br/>
                     <br/>
-                    {
-                      !disableForm() ?
-                      <button type="button" className="btn btn-primary btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px"}}> Submit </button> :
-                      <button type="button" disabled className="btn btn-secondary btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px"}}> Submit </button>
 
+                    {!loading ?
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="btn btn-primary btn-large waves-effect waves-light"
+                        style={{ margin: "auto", display: "block", width: "200px" }}
+                      >
+                        Add Product
+                      </button> :
+                      <button type="button"
+                              className="btn btn-primary btn-large waves-effect waves-light"
+                              style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}>
+                        Adding Product .....
+                      </button>
                     }
-
-                    {
-                      loading ?
-                      <button type="button" className="btn btn-primary btn-large waves-effect waves-light" style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}> Submit ..... </button>
-                       : ""
-                    }
-
                   </form>
-                </div> {/* end card-body*/}
-              </div> {/* end card*/}
-            </div> {/* end col */}
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
 
       </div>
-
       {showModal ? <AddProductVariant toggleModal={displayModal}/> : ""}
     </div>
 
