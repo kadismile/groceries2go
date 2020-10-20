@@ -30,7 +30,6 @@ function AddProductVariant(props) {
   const closeModal = () => {
     props.toggleModal(false);
   };
-
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
@@ -50,7 +49,6 @@ function AddProductVariant(props) {
       localStorage.setItem("variant", JSON.stringify(variant))
     }
   };
-
   const handleChange = event => {
     event.preventDefault();
     let { name, value } = event.target;
@@ -103,9 +101,7 @@ function AddProductVariant(props) {
       };
     });
   };
-
   const { errors } = formValues;
-
   return props.toggleModal ? (
     <div
       id="addGroup"
@@ -248,7 +244,7 @@ function AddProductVariant(props) {
               <button type="button"
                       className="btn btn-primary btn-large waves-effect waves-light"
                       style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}>
-                Add Variant .....
+                Adding Variant .....
               </button>
             }
 
