@@ -119,13 +119,13 @@ function AddProduct() {
 
       if (val === "Limage") {
         if (!Limage.length) {
-          errors.Limage = "please upload a Large Image";
+          errors.Limage = "kndly upload a Large Image";
         }
       }
 
       if (val === "Mimage") {
         if (!Mimage.length) {
-          errors.Mimage = "please upload a Medium Image";
+          errors.Mimage = "kindly upload a Medium Image";
         }
       }
     }
@@ -299,11 +299,11 @@ function AddProduct() {
                                 <tbody>
                                 {productVariants.map((variant, index)=> {
                                   return (
-                                    <tr>
+                                    <tr key={index}>
                                       <th scope="row">{index + 1}</th>
-                                      <td>Mark</td>
-                                      <td>Otto</td>
-                                      <td>@mdo</td>
+                                      <td>{variant.name}</td>
+                                      <td>{variant.code}</td>
+                                      <td>{variant.price}</td>
                                     </tr>
                                   )
                                 })}
