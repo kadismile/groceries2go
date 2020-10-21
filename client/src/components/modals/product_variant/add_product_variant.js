@@ -38,16 +38,13 @@ function AddProductVariant(props) {
     for (let val of Object.values(formValues.errors)) {
       if (val) {
         setTimeout(()=> setLoading(false), 2000)
+        return
       }
     }
     delete formValues.errors
-    let variant = localStorage.getItem("variant")
-    if (!variant) {
-      localStorage.setItem("variant", JSON.stringify([formValues]))
-    } else {
-      variant = [ ...JSON.parse(variant), formValues ]
-      localStorage.setItem("variant", JSON.stringify(variant))
-    }
+    props.toggleModal(false);
+    $('#addGroup').modal('toggle');
+    props.productVariants([formValues]);
   };
   const handleChange = event => {
     event.preventDefault();

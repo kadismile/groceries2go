@@ -91,7 +91,7 @@ function AddProduct() {
     }
   }
   const validateForm = errors => {
-    const { name, description, productTypeId, categoryId, Limage, Mimage } = formValues;
+    const { name, description, productTypeId, categoryId, Limage, Mimage, productVariants } = formValues;
     for (let val in formValues) {
       if (val === "name") {
         if (name.length <= 3) {
@@ -128,6 +128,12 @@ function AddProduct() {
           errors.Mimage = "kindly upload a Medium Image";
         }
       }
+
+      if (val === "productVariants") {
+        if (!productVariants.length) {
+          errors.productVariants = "add product variants";
+        }
+      }
     }
     setFormValues(prevState => {
       return {
@@ -139,13 +145,35 @@ function AddProduct() {
   const displayModal = (value) => {
     setShowModal(value)
   };
-  const variants = () => {
-    let variant = localStorage.getItem("variant")
-    return JSON.parse(variant) ? JSON.parse(variant) : []
+  const variants = (variants) => {
+    variants = variants || []
+    let { productVariants } = formValues
+    if (productVariants.length) {
+      productVariants = [...productVariants, ...variants]
+    } else {
+      productVariants = variants
+    }
+    setFormValues((prevState)=> {
+      return {
+        ...prevState,
+        productVariants: productVariants
+      }
+    })
+  }
+  const deleteVariant = (index) => {
+    const {productVariants} = formValues
+    for(let variant of productVariants) {
+      productVariants.splice(index, 1);
+    }
+    setFormValues((prevState)=> {
+      return {
+        ...prevState,
+        productVariants
+      }
+    })
   }
 
-  const { errors} = formValues;
-  const productVariants = variants()
+  const { errors, productVariants} = formValues;
   return (
     <div className="main-content">
 
@@ -277,7 +305,9 @@ function AddProduct() {
 
                     <br/>
                     <button type="button" onClick={e => { setShowModal(true) }}  className="btn btn-success waves-effect waves-light" style={{float: "right"}}> <i className='bx bx-plus'></i> Add Variant </button>
-
+                    {errors.productVariants && errors.productVariants.length > 0 && (
+                      <span className="addGroup__error">{errors.productVariants}</span>
+                    )}
                     <br/>
                     <br/>
 
@@ -294,6 +324,7 @@ function AddProduct() {
                                   <th>Variant Name</th>
                                   <th>Code</th>
                                   <th>Price</th>
+                                  <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -304,6 +335,7 @@ function AddProduct() {
                                       <td>{variant.name}</td>
                                       <td>{variant.code}</td>
                                       <td>{variant.price}</td>
+                                      <td style={{float: "right"}}><a onClick={()=> deleteVariant(index)} style={{color: "#767c82", cursor: "pointer"}}><i className="fa fa-fw fa-trash"></i></a></td>
                                     </tr>
                                   )
                                 })}
@@ -345,7 +377,7 @@ function AddProduct() {
         </div>
 
       </div>
-      {showModal ? <AddProductVariant toggleModal={displayModal}/> : ""}
+      {showModal ? <AddProductVariant toggleModal={displayModal} productVariants={variants} /> : ""}
     </div>
 
   )
