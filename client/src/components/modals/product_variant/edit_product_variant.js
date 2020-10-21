@@ -2,23 +2,23 @@ import React, { useEffect, useState } from "react";
 /**
  * @return {string}
  */
-function AddProductVariant(props) {
+function EditProductVariant(props) {
+  const {productVariant} = props
   const $ = window.$;
-  const [submitForm, setSubmitForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
-    name: "",
-    price: "",
-    code: "",
-    quantityInCase: "",
-    inventory: "",
-    uom: "",
-    upc: "",
+    name: productVariant.name,
+    price: productVariant.price,
+    code: productVariant.code,
+    quantityInCase: productVariant.quantityInCase,
+    inventory: productVariant.inventory,
+    uom: productVariant.uom,
+    upc: productVariant.upc,
     errors: {}
   });
 
   useEffect(() => {
-    window.$("#addVariant").modal("show");
+    window.$("#editProductVariant").modal("show");
   }, []);
 
   const closeModal = () => {
@@ -36,9 +36,9 @@ function AddProductVariant(props) {
       }
     }
     delete formValues.errors
-    $("#addVariant").modal('toggle');
     props.toggleModal(false);
-    props.productVariants([formValues]);
+    $('#editProductVariant').modal('toggle');
+    props.updateVariant(productVariant.id, formValues);
   };
   const handleChange = event => {
     event.preventDefault();
@@ -83,10 +83,10 @@ function AddProductVariant(props) {
       };
     });
   };
-  const { errors } = formValues;
+  const { errors, name, price, code, inventory, quantityInCase, uom,upc} = formValues;
   return props.toggleModal ? (
     <div
-      id="addVariant"
+      id="editProductVariant"
       className="modal fade"
       tabIndex="-1"
       role="dialog"
@@ -99,7 +99,7 @@ function AddProductVariant(props) {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="addGroupLabel">
-              ADD PRODUCT VARIANT
+              Edit {productVariant.name}
             </h5>
             <button
               type="button"
@@ -117,6 +117,7 @@ function AddProductVariant(props) {
               <div className="form-row">
                 <div className="col-md-6 mb-3">
                   <input
+                    value={name}
                     type="text"
                     onChange={handleChange}
                     name="name"
@@ -131,6 +132,7 @@ function AddProductVariant(props) {
 
                 <div className="col-md-6 mb-3">
                   <input
+                    value={price}
                     type="text"
                     onChange={handleChange}
                     name="price"
@@ -147,6 +149,7 @@ function AddProductVariant(props) {
               <div className="form-row">
                 <div className="col-md-6 mb-3">
                   <input
+                    value={code}
                     type="text"
                     onChange={handleChange}
                     name="code"
@@ -161,6 +164,7 @@ function AddProductVariant(props) {
 
                 <div className="col-md-6 mb-3">
                   <input
+                    value={inventory}
                     type="number"
                     onChange={handleChange}
                     name="inventory"
@@ -178,6 +182,7 @@ function AddProductVariant(props) {
               <div className="form-row">
                 <div className="col-md-6 mb-3">
                   <input
+                    value={quantityInCase}
                     type="text"
                     onChange={handleChange}
                     name="inventory"
@@ -189,6 +194,7 @@ function AddProductVariant(props) {
 
                 <div className="col-md-6 mb-3">
                   <input
+                    value={uom}
                     type="text"
                     onChange={handleChange}
                     name="code"
@@ -202,6 +208,7 @@ function AddProductVariant(props) {
               <div className="form-row">
                 <div className="col-md-6 mb-3">
                   <input
+                    value={upc}
                     type="text"
                     onChange={handleChange}
                     name="inventory"
@@ -221,12 +228,12 @@ function AddProductVariant(props) {
                 className="btn btn-primary btn-large waves-effect waves-light"
                 style={{ margin: "auto", display: "block", width: "200px" }}
               >
-                Add Variant
+                Update Product Variant
               </button> :
               <button type="button"
                       className="btn btn-primary btn-large waves-effect waves-light"
                       style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}>
-                Adding Variant .....
+                Updating Product Variant .....
               </button>
             }
           </div>
@@ -238,4 +245,4 @@ function AddProductVariant(props) {
   );
 }
 
-export { AddProductVariant };
+export { EditProductVariant };

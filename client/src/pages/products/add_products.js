@@ -1,17 +1,11 @@
 import React, {useEffect,useState} from 'react'
 import Select from "react-select";
 import {Link, Redirect, useHistory} from "react-router-dom";
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
-import useOnclickOutside from "react-cool-onclickoutside";
 import {getCategory, registerUser, getProductType} from "../../utils/auth-client";
-import LaddaButton, {SLIDE_UP, XXL} from "react-ladda";
 import toastr from "toastr";
-import validator from "validator";
 import {useAuth} from "../../context/auth-context";
 import {AddProductVariant} from "../../components/modals/product_variant/add_product_variant";
+import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
 
 function AddProduct() {
   const  histoy = useHistory()
@@ -43,6 +37,8 @@ function AddProduct() {
     errors: {}
   });
   const [showModal, setShowModal] = useState(false);
+  const [variantToEdit, setVariantToEdit] = useState([])
+  const [showEditModal, setEditModal] = useState(false);
   const productTypeOptions = productType.map((pt)=> {
     return {value: pt.name, label: pt.name, id: pt._id}
   });
@@ -145,10 +141,16 @@ function AddProduct() {
   const displayModal = (value) => {
     setShowModal(value)
   };
+  const displayEditModal = (value) => {
+    setEditModal(value)
+  };
   const variants = (variants) => {
     variants = variants || []
     let { productVariants } = formValues
     if (productVariants.length) {
+      variants = variants.map((val)=> {
+        return {...val, id: productVariants.length - 1}
+      })
       productVariants = [...productVariants, ...variants]
     } else {
       productVariants = variants
@@ -172,7 +174,29 @@ function AddProduct() {
       }
     })
   }
-
+  const editVariant = (index, variant) => {
+    const {productVariants} = formValues
+    const editVariant = {...productVariants}
+    if (variant) {
+      const objIndex = productVariants.findIndex((obj => obj.id === index));
+      productVariants[objIndex].name = variant.name
+      productVariants[objIndex].price = variant.price
+      productVariants[objIndex].code = variant.code
+      productVariants[objIndex].quantityInCase = variant.quantityInCase
+      productVariants[objIndex].inventory = variant.inventory
+      productVariants[objIndex].uom = variant.uom
+      productVariants[objIndex].upc = variant.upc
+      setFormValues((prevState) => {
+        return {
+          ...prevState,
+          productVariants: productVariants
+        }
+      })
+    } else {
+      setEditModal(true)
+      setVariantToEdit(productVariants[index])
+    }
+  }
   const { errors, productVariants} = formValues;
   return (
     <div className="main-content">
@@ -335,7 +359,19 @@ function AddProduct() {
                                       <td>{variant.name}</td>
                                       <td>{variant.code}</td>
                                       <td>{variant.price}</td>
-                                      <td style={{float: "right"}}><a onClick={()=> deleteVariant(index)} style={{color: "#767c82", cursor: "pointer"}}><i className="fa fa-fw fa-trash"></i></a></td>
+
+                                      <td style={{float: "right"}}>
+                                        <a onClick={() => editVariant(index)} style={{color: "#767c82", cursor: "pointer"}}>
+                                          <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
+                                        </a>
+                                      </td>
+
+                                      <td style={{float: "right"}}>
+                                        <a onClick={()=> deleteVariant(variant.id)} style={{color: "#767c82", cursor: "pointer"}}>
+                                          <i className="fa fa-fw fa-trash" data-toggle="tooltip" data-placement="top" title=""data-original-title="remove"></i>
+                                        </a>
+                                      </td>
+
                                     </tr>
                                   )
                                 })}
@@ -378,6 +414,7 @@ function AddProduct() {
 
       </div>
       {showModal ? <AddProductVariant toggleModal={displayModal} productVariants={variants} /> : ""}
+      {showEditModal ? <EditProductVariant toggleModal={displayEditModal} productVariant={variantToEdit} updateVariant={editVariant} /> : ""}
     </div>
 
   )
