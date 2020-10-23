@@ -53,6 +53,21 @@ function AddProductVariant(props) {
       };
     });
   };
+  const handlePress = event => {
+    if (event.which !== 46 && (event.which < 48 || event.which > 57)) {
+      event.preventDefault();
+    }
+    let { name, value } = event.target;
+    let errors = formValues.errors;
+    errors[name] = "";
+    setFormValues(prevState => {
+      return {
+        ...prevState,
+        errors,
+        [name]: value
+      };
+    });
+  };
   const validateForm = errors => {
     const { name, price, code } = formValues;
 
@@ -132,7 +147,7 @@ function AddProductVariant(props) {
                 <div className="col-md-6 mb-3">
                   <input
                     type="text"
-                    onChange={handleChange}
+                    onKeyPress={handlePress}
                     name="price"
                     className="form-control form_name"
                     placeholder="Price"
@@ -161,8 +176,8 @@ function AddProductVariant(props) {
 
                 <div className="col-md-6 mb-3">
                   <input
-                    type="number"
-                    onChange={handleChange}
+                    type="text"
+                    onKeyPress={handlePress}
                     name="inventory"
                     className="form-control form_name"
                     id="validationCustom01"
@@ -179,7 +194,7 @@ function AddProductVariant(props) {
                 <div className="col-md-6 mb-3">
                   <input
                     type="text"
-                    onChange={handleChange}
+                    onKeyPress={handlePress}
                     name="inventory"
                     className="form-control form_name"
                     placeholder="Quantity In Case"
