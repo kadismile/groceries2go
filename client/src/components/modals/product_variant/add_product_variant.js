@@ -4,8 +4,9 @@ import React, { useEffect, useState } from "react";
  */
 function AddProductVariant(props) {
   const $ = window.$;
-  const [submitForm, setSubmitForm] = useState(false);
+
   const [loading, setLoading] = useState(false);
+
   const [formValues, setFormValues] = useState({
     name: "",
     price: "",
@@ -14,16 +15,28 @@ function AddProductVariant(props) {
     inventory: "",
     uom: "",
     upc: "",
+    Limage: "",
+    Mimage: "",
+    file: "",
     errors: {}
   });
 
   useEffect(() => {
     window.$("#addVariant").modal("show");
+    $('.dropify').dropify({
+      messages: {
+        'default': 'Drag and drop a file here or click',
+        'replace': 'Drag and drop or click to replace',
+        'remove':  'Remove',
+        'error':   'Ooops, something wrong happended.'
+      }
+    });
   }, []);
 
   const closeModal = () => {
     props.toggleModal(false);
   };
+
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
@@ -36,23 +49,31 @@ function AddProductVariant(props) {
       }
     }
     delete formValues.errors
+    setFormValues((prevState)=> {
+      return {
+        ...prevState,
+        file: [formValues.Limage, formValues.Mimage]
+      }
+    })
     $("#addVariant").modal('toggle');
     props.toggleModal(false);
     props.productVariants([formValues]);
   };
+
   const handleChange = event => {
     event.preventDefault();
-    let { name, value } = event.target;
+    let { name, value, files } = event.target;
     let errors = formValues.errors;
     errors[name] = "";
     setFormValues(prevState => {
       return {
         ...prevState,
         errors,
-        [name]: value
+        [name]: value && !files ? value : files ? files[0] : ''
       };
     });
   };
+
   const handlePress = event => {
     if (event.which !== 46 && (event.which < 48 || event.which > 57)) {
       event.preventDefault();
@@ -68,8 +89,9 @@ function AddProductVariant(props) {
       };
     });
   };
+
   const validateForm = errors => {
-    const { name, price, code } = formValues;
+    const { name, price, code, Limage, Mimage } = formValues;
 
     for (let val in formValues) {
       if (val === "name") {
@@ -89,6 +111,19 @@ function AddProductVariant(props) {
           errors.code = "code cannot be empty";
         }
       }
+
+      if (val === "Limage") {
+        if (!Limage.name) {
+          errors.Limage = "kndly upload a Large Image";
+        }
+      }
+
+      if (val === "Mimage") {
+        if (!Mimage.name) {
+          errors.Mimage = "kindly upload a Medium Image";
+        }
+      }
+
     }
 
     setFormValues(prevState => {
@@ -98,7 +133,9 @@ function AddProductVariant(props) {
       };
     });
   };
+
   const { errors } = formValues;
+
   return props.toggleModal ? (
     <div
       id="addVariant"
@@ -184,6 +221,24 @@ function AddProductVariant(props) {
                     placeholder="Inventory"
                     required
                   />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="colFormLabel" style={{paddingLeft: "0px"}}>Large Image</label>
+                  <input type="file" name="Limage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                  {errors.Limage && errors.Limage.length > 0 && (
+                    <span className="addGroup__error">{errors.Limage}</span>
+                  )}
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="colFormLabel"  style={{paddingLeft: "0px"}}>Medium Image</label>
+                  <input type="file" name="Mimage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                  {errors.Mimage && errors.Mimage.length > 0 && (
+                    <span className="addGroup__error">{errors.Mimage}</span>
+                  )}
                 </div>
               </div>
 
