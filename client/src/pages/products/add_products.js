@@ -1,7 +1,8 @@
 import React, {useEffect,useState} from 'react'
 import Select from "react-select";
+import Swal from 'sweetalert2'
 import {Link, Redirect, useHistory} from "react-router-dom";
-import {getCategory, registerUser, getProductType} from "../../utils/auth-client";
+import {getCategory, createProduct, getProductType} from "../../utils/auth-client";
 import toastr from "toastr";
 import {useAuth} from "../../context/auth-context";
 import {AddProductVariant} from "../../components/modals/product_variant/add_product_variant";
@@ -34,6 +35,7 @@ function AddProduct() {
     productVariants: [],
     Limage: "",
     Mimage: "",
+    file:"",
     errors: {}
   });
   const [showModal, setShowModal] = useState(false);
@@ -47,14 +49,14 @@ function AddProduct() {
   });
   const handleChange = event => {
     event.preventDefault();
-    let { name, value } = event.target;
+    let { name, value, files } = event.target;
     let errors = formValues.errors;
     errors[name] = "";
     setFormValues(prevState => {
       return {
         ...prevState,
         errors,
-        [name]: value
+        [name]: value && !files ? value : files ? files[0] : ''
       };
     });
   };
@@ -69,9 +71,29 @@ function AddProduct() {
       }
     }
     delete formValues.errors
+    setFormValues((prevState)=> {
+      return {
+        ...prevState,
+        file: [formValues.Limage, formValues.Mimage]
+      }
+    })
+
+    let formData = new FormData();
+    formData.append('name',formValues.name);
+    formData.append('description',formValues.description);
+    formData.append('productTypeId',formValues.productTypeId);
+    formData.append('productType',formValues.productType);
+    formData.append('categoryId',formValues.categoryId);
+    formData.append('category',formValues.category);
+    formData.append('productVariants',formValues.productVariants);
+    for(var x = 0; x < formValues.file.length; x++) {
+      formData.append('file', formValues.file[x])
+    }
+    setTimeout(async ()=> await createProduct(formData), 1000) ;
+    setLoading(false);
     return
-    const data = await registerUser(formValues);
     setLoading(false)
+    let data;
     console.log("DATA +++ DATA ", data)
     if (data.success === false) {
       toastr.error(data.error);
@@ -114,19 +136,19 @@ function AddProduct() {
       }
 
       if (val === "Limage") {
-        if (!Limage.length) {
+        if (!Limage.name) {
           errors.Limage = "kndly upload a Large Image";
         }
       }
 
       if (val === "Mimage") {
-        if (!Mimage.length) {
+        if (!Mimage.name) {
           errors.Mimage = "kindly upload a Medium Image";
         }
       }
 
       if (val === "productVariants") {
-        if (!productVariants.length) {
+        if (productVariants.length === 0) {
           errors.productVariants = "add product variants";
         }
       }
@@ -164,19 +186,29 @@ function AddProduct() {
   }
   const deleteVariant = (index) => {
     const {productVariants} = formValues
-    for(let variant of productVariants) {
-      productVariants.splice(index, 1);
-    }
-    setFormValues((prevState)=> {
-      return {
-        ...prevState,
-        productVariants
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this product variant!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.value) {
+        for(let variant of productVariants) {
+          productVariants.splice(index, 1);
+        }
+        setFormValues((prevState)=> {
+          return {
+            ...prevState,
+            productVariants
+          }
+        })
       }
     })
   }
   const editVariant = (index, variant) => {
     const {productVariants} = formValues
-    const editVariant = {...productVariants}
     if (variant) {
       const objIndex = productVariants.findIndex((obj => obj.id === index));
       productVariants[objIndex].name = variant.name
@@ -240,7 +272,6 @@ function AddProduct() {
                           <span className="addGroup__error">{errors.name}</span>
                         )}
                       </div>
-
                     </div>
 
                     <div className="form-row">
@@ -257,7 +288,7 @@ function AddProduct() {
                     <div className="form-row">
                       <div className="col-md-6 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Large Image</label>
-                        <input type="file" className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                        <input type="file" name="Limage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
                         {errors.Limage && errors.Limage.length > 0 && (
                           <span className="addGroup__error">{errors.Limage}</span>
                         )}
@@ -265,12 +296,11 @@ function AddProduct() {
 
                       <div className="col-md-6 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Medium Image</label>
-                        <input type="file" className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                        <input type="file" name="Mimage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
                         {errors.Mimage && errors.Mimage.length > 0 && (
                           <span className="addGroup__error">{errors.Mimage}</span>
                         )}
                       </div>
-
                     </div>
 
                     <div className="form-row">

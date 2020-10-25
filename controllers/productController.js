@@ -4,26 +4,45 @@ const Product = require('../models/Product');
 const Category = require('../models/Category');
 const ProductType = require('../models/ProductType');
 const kue = require('kue');
+const path = require("path");
+const multer = require("multer");
 
 
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, `./public/uploads`)
+  },
+  filename: function(req, file, cb){
+    cb(null,"IMAGE-" + Date.now() + path.extname(file.originalname));
+  }
+});
+
+var uploadFiles = multer({ storage: storage }).array("file", 5);
 
 exports.addProduct = async (req, res) => {
   try {
-    const doc = req.body;
-    var validate = new Product(doc);
+    //const doc = req.body;
+    /*var validate = new Product(doc);
     var error = validate.validateSync();
     if (error) {
       res.status(406).json({
         status: 'failed',
         errors: error.errors
       });
-    }
-    const product = await Product.create(doc);
+    }*/
 
-    res.status(200).json({
-      status: 'success',
-      data: product
+    await uploadFiles(req, res, (err) => {
+      res.status(200).json({
+        status: 'success',
+        data: "product"
+      });
     });
+
+
+
+    //const product = await Product.create(doc);
+
+
 
   } catch (e) {
     console.log(`${e}`.red);
