@@ -10,15 +10,14 @@ function EditProductVariant(props) {
 
   const [formValues, setFormValues] = useState({
     name: productVariant.name,
+    description: productVariant.description,
     price: productVariant.price,
     code: productVariant.code,
     quantityInCase: productVariant.quantityInCase,
     inventory: productVariant.inventory,
     uom: productVariant.uom,
     upc: productVariant.upc,
-    Limage: "",
-    Mimage: "",
-    file: "",
+    productVariantImage: "",
     errors: {}
   });
 
@@ -50,12 +49,6 @@ function EditProductVariant(props) {
       }
     }
     delete formValues.errors
-    setFormValues((prevState)=> {
-      return {
-        ...prevState,
-        file: [formValues.Limage, formValues.Mimage]
-      }
-    })
     props.toggleModal(false);
     $('#editProductVariant').modal('toggle');
     props.updateVariant(productVariant.id, formValues);
@@ -70,7 +63,7 @@ function EditProductVariant(props) {
       return {
         ...prevState,
         errors,
-        [name]: value && !files ? value : files ? files[0] : ''
+        [name]: value && !files ? value : files ? files : ''
       };
     });
   };
@@ -92,12 +85,18 @@ function EditProductVariant(props) {
   };
 
   const validateForm = errors => {
-    const { name, price, code,Limage, Mimage } = formValues;
+    const { name, price, code,productVariantImage, description } = formValues;
 
     for (let val in formValues) {
       if (val === "name") {
         if (name.length <= 3) {
           errors.name = "variant name must be more than 3 characters long!";
+        }
+      }
+
+      if (val === "description") {
+        if (description.length <= 3) {
+          errors.description = "description must be more than 3 characters long!";
         }
       }
 
@@ -113,15 +112,9 @@ function EditProductVariant(props) {
         }
       }
 
-      if (val === "Limage") {
-        if (!Limage.name) {
-          errors.Limage = "kndly upload a Large Image";
-        }
-      }
-
-      if (val === "Mimage") {
-        if (!Mimage.name) {
-          errors.Mimage = "kindly upload a Medium Image";
+      if (val === "productVariantImage") {
+        if (!productVariantImage) {
+          errors.productVariantImage = "kindly upload an Image";
         }
       }
 
@@ -135,7 +128,7 @@ function EditProductVariant(props) {
     });
   };
 
-  const { errors, name, price, code, inventory, quantityInCase, uom,upc} = formValues;
+  const { errors, name, price, code, inventory, quantityInCase, uom,upc, description} = formValues;
 
   return props.toggleModal ? (
     <div
@@ -231,18 +224,18 @@ function EditProductVariant(props) {
 
               <div className="form-row">
                 <div className="col-md-6 mb-3">
-                  <label htmlFor="colFormLabel" style={{paddingLeft: "0px"}}>Large Image</label>
-                  <input type="file" name="Limage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                  {errors.Limage && errors.Limage.length > 0 && (
-                    <span className="addGroup__error">{errors.Limage}</span>
+                  <label htmlFor="colFormLabel" style={{paddingLeft: "0px"}}>Product Variant Image</label>
+                  <input type="file" name="productVariantImage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                  {errors.productVariantImage && errors.productVariantImage.length > 0 && (
+                    <span className="addGroup__error">{errors.productVariantImage}</span>
                   )}
                 </div>
 
                 <div className="col-md-6 mb-3">
-                  <label htmlFor="colFormLabel"  style={{paddingLeft: "0px"}}>Medium Image</label>
-                  <input type="file" name="Mimage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                  {errors.Mimage && errors.Mimage.length > 0 && (
-                    <span className="addGroup__error">{errors.Mimage}</span>
+                  <label htmlFor="colFormLabel"  style={{paddingLeft: "0px"}}>Description</label>
+                  <textarea value={description} className="form-control" id="exampleFormControlTextarea1" onChange={handleChange} name="description" rows="7"></textarea>
+                  {errors.description && errors.description.length > 0 && (
+                    <span className="addGroup__error">{errors.description}</span>
                   )}
                 </div>
               </div>
