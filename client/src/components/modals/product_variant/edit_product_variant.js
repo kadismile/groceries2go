@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
  */
 function EditProductVariant(props) {
   const {productVariant} = props
-  const $ = window.$;
+
+  const $ = window.$
   const [loading, setLoading] = useState(false);
+
   const [formValues, setFormValues] = useState({
     name: productVariant.name,
     price: productVariant.price,
@@ -14,16 +16,28 @@ function EditProductVariant(props) {
     inventory: productVariant.inventory,
     uom: productVariant.uom,
     upc: productVariant.upc,
+    Limage: "",
+    Mimage: "",
+    file: "",
     errors: {}
   });
 
   useEffect(() => {
     window.$("#editProductVariant").modal("show");
+    $('.dropify').dropify({
+      messages: {
+        'default': 'Drag and drop a file here or click',
+        'replace': 'Drag and drop or click to replace',
+        'remove':  'Remove',
+        'error':   'Ooops, something wrong happended.'
+      }
+    });
   }, []);
 
   const closeModal = () => {
     props.toggleModal(false);
   };
+
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
@@ -36,12 +50,35 @@ function EditProductVariant(props) {
       }
     }
     delete formValues.errors
+    setFormValues((prevState)=> {
+      return {
+        ...prevState,
+        file: [formValues.Limage, formValues.Mimage]
+      }
+    })
     props.toggleModal(false);
     $('#editProductVariant').modal('toggle');
     props.updateVariant(productVariant.id, formValues);
   };
+
   const handleChange = event => {
     event.preventDefault();
+    let { name, value, files } = event.target;
+    let errors = formValues.errors;
+    errors[name] = "";
+    setFormValues(prevState => {
+      return {
+        ...prevState,
+        errors,
+        [name]: value && !files ? value : files ? files[0] : ''
+      };
+    });
+  };
+
+  const handlePress = event => {
+    if (event.which !== 46 && (event.which < 48 || event.which > 57)) {
+      event.preventDefault();
+    }
     let { name, value } = event.target;
     let errors = formValues.errors;
     errors[name] = "";
@@ -53,8 +90,9 @@ function EditProductVariant(props) {
       };
     });
   };
+
   const validateForm = errors => {
-    const { name, price, code } = formValues;
+    const { name, price, code,Limage, Mimage } = formValues;
 
     for (let val in formValues) {
       if (val === "name") {
@@ -74,6 +112,19 @@ function EditProductVariant(props) {
           errors.code = "code cannot be empty";
         }
       }
+
+      if (val === "Limage") {
+        if (!Limage.name) {
+          errors.Limage = "kndly upload a Large Image";
+        }
+      }
+
+      if (val === "Mimage") {
+        if (!Mimage.name) {
+          errors.Mimage = "kindly upload a Medium Image";
+        }
+      }
+
     }
 
     setFormValues(prevState => {
@@ -83,7 +134,9 @@ function EditProductVariant(props) {
       };
     });
   };
+
   const { errors, name, price, code, inventory, quantityInCase, uom,upc} = formValues;
+
   return props.toggleModal ? (
     <div
       id="editProductVariant"
@@ -134,7 +187,7 @@ function EditProductVariant(props) {
                   <input
                     value={price}
                     type="text"
-                    onChange={handleChange}
+                    onKeyPress={handlePress}
                     name="price"
                     className="form-control form_name"
                     placeholder="Price"
@@ -165,14 +218,32 @@ function EditProductVariant(props) {
                 <div className="col-md-6 mb-3">
                   <input
                     value={inventory}
-                    type="number"
-                    onChange={handleChange}
+                    type="text"
+                    onKeyPress={handlePress}
                     name="inventory"
                     className="form-control form_name"
                     id="validationCustom01"
                     placeholder="Inventory"
                     required
                   />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="colFormLabel" style={{paddingLeft: "0px"}}>Large Image</label>
+                  <input type="file" name="Limage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                  {errors.Limage && errors.Limage.length > 0 && (
+                    <span className="addGroup__error">{errors.Limage}</span>
+                  )}
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="colFormLabel"  style={{paddingLeft: "0px"}}>Medium Image</label>
+                  <input type="file" name="Mimage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                  {errors.Mimage && errors.Mimage.length > 0 && (
+                    <span className="addGroup__error">{errors.Mimage}</span>
+                  )}
                 </div>
               </div>
 

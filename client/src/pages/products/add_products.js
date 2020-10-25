@@ -1,17 +1,15 @@
 import React, {useEffect,useState} from 'react'
 import Select from "react-select";
 import Swal from 'sweetalert2'
-import {Link, Redirect, useHistory} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {getCategory, createProduct, getProductType} from "../../utils/auth-client";
 import toastr from "toastr";
-import {useAuth} from "../../context/auth-context";
 import {AddProductVariant} from "../../components/modals/product_variant/add_product_variant";
 import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
 
 function AddProduct() {
-  const  histoy = useHistory()
   const $ = window.$;
-  const {user} = useAuth();
+
   useEffect(()=> {
     $('.dropify').dropify({
       messages: {
@@ -22,9 +20,13 @@ function AddProduct() {
       }
     });
   },[])
+
   const [categories, setCategories] = useState([]);
+
   const [productType, setProductType] = useState([]);
+
   const [loading, setLoading] = useState(false);
+
   const [formValues, setFormValues] = useState({
     name: "",
     description: "",
@@ -38,15 +40,21 @@ function AddProduct() {
     file:"",
     errors: {}
   });
+
   const [showModal, setShowModal] = useState(false);
+
   const [variantToEdit, setVariantToEdit] = useState([])
+
   const [showEditModal, setEditModal] = useState(false);
+
   const productTypeOptions = productType.map((pt)=> {
     return {value: pt.name, label: pt.name, id: pt._id}
   });
+
   const categoryOptions = categories.map((cat)=> {
     return { value: cat.name, label: cat.name, id: cat._id }
   });
+
   const handleChange = event => {
     event.preventDefault();
     let { name, value, files } = event.target;
@@ -60,6 +68,7 @@ function AddProduct() {
       };
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -108,6 +117,7 @@ function AddProduct() {
       })*/
     }
   }
+
   const validateForm = errors => {
     const { name, description, productTypeId, categoryId, Limage, Mimage, productVariants } = formValues;
     for (let val in formValues) {
@@ -160,12 +170,15 @@ function AddProduct() {
       };
     });
   };
+
   const displayModal = (value) => {
     setShowModal(value)
   };
+
   const displayEditModal = (value) => {
     setEditModal(value)
   };
+
   const variants = (variants) => {
     variants = variants || []
     let { productVariants } = formValues
@@ -184,6 +197,7 @@ function AddProduct() {
       }
     })
   }
+
   const deleteVariant = (index) => {
     const {productVariants} = formValues
     Swal.fire({
@@ -207,6 +221,7 @@ function AddProduct() {
       }
     })
   }
+
   const editVariant = (index, variant) => {
     const {productVariants} = formValues
     if (variant) {
@@ -229,7 +244,9 @@ function AddProduct() {
       setVariantToEdit(productVariants[index])
     }
   }
+
   const { errors, productVariants} = formValues;
+
   return (
     <div className="main-content">
 
@@ -362,6 +379,7 @@ function AddProduct() {
                     {errors.productVariants && errors.productVariants.length > 0 && (
                       <span className="addGroup__error">{errors.productVariants}</span>
                     )}
+                    <br/>
                     <br/>
                     <br/>
 
