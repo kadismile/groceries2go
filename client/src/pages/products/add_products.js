@@ -35,9 +35,7 @@ function AddProduct() {
     categoryId: [],
     category: "",
     productVariants: [],
-    Limage: "",
-    Mimage: "",
-    file:"",
+    productImage:"",
     errors: {}
   });
 
@@ -64,7 +62,7 @@ function AddProduct() {
       return {
         ...prevState,
         errors,
-        [name]: value && !files ? value : files ? files[0] : ''
+        [name]: value && !files ? value : files ? files : ''
       };
     });
   };
@@ -80,12 +78,6 @@ function AddProduct() {
       }
     }
     delete formValues.errors
-    setFormValues((prevState)=> {
-      return {
-        ...prevState,
-        file: [formValues.Limage, formValues.Mimage]
-      }
-    })
 
     let formData = new FormData();
     formData.append('name',formValues.name);
@@ -95,8 +87,8 @@ function AddProduct() {
     formData.append('categoryId',formValues.categoryId);
     formData.append('category',formValues.category);
     formData.append('productVariants',formValues.productVariants);
-    for(var x = 0; x < formValues.file.length; x++) {
-      formData.append('file', formValues.file[x])
+    for(var x = 0; x < formValues.productImage.length; x++) {
+      formData.append('file', formValues.productImage[x])
     }
     setTimeout(async ()=> await createProduct(formData), 1000) ;
     setLoading(false);
@@ -119,7 +111,7 @@ function AddProduct() {
   }
 
   const validateForm = errors => {
-    const { name, description, productTypeId, categoryId, Limage, Mimage, productVariants } = formValues;
+    const { name, description, productTypeId, categoryId, productImage, productVariants } = formValues;
     for (let val in formValues) {
       if (val === "name") {
         if (name.length <= 3) {
@@ -128,7 +120,7 @@ function AddProduct() {
       }
 
       if (val === "description") {
-        if (!description.length) {
+        if (description.length <= 3) {
           errors.description = "description of product must be more than 3 characters long!";
         }
       }
@@ -145,15 +137,9 @@ function AddProduct() {
         }
       }
 
-      if (val === "Limage") {
-        if (!Limage.name) {
-          errors.Limage = "kndly upload a Large Image";
-        }
-      }
-
-      if (val === "Mimage") {
-        if (!Mimage.name) {
-          errors.Mimage = "kindly upload a Medium Image";
+      if (val === "productImage") {
+        if (!productImage.name) {
+          errors.productImage = "kndly upload an Image";
         }
       }
 
@@ -233,6 +219,7 @@ function AddProduct() {
       productVariants[objIndex].inventory = variant.inventory
       productVariants[objIndex].uom = variant.uom
       productVariants[objIndex].upc = variant.upc
+      productVariants[objIndex].description = variant.description
       setFormValues((prevState) => {
         return {
           ...prevState,
@@ -294,7 +281,7 @@ function AddProduct() {
                     <div className="form-row">
                       <div className="col-md-12 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Description</label>
-                        <input type="text" onChange={handleChange} name="description" className="form-control" id="colFormLabel"/>
+                        <textarea className="form-control" id="exampleFormControlTextarea1" onChange={handleChange} name="description" rows="3"></textarea>
                         {errors.description && errors.description.length > 0 && (
                           <span className="addGroup__error">{errors.description}</span>
                         )}
@@ -303,21 +290,14 @@ function AddProduct() {
                     </div>
 
                     <div className="form-row">
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Large Image</label>
-                        <input type="file" name="Limage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                        {errors.Limage && errors.Limage.length > 0 && (
-                          <span className="addGroup__error">{errors.Limage}</span>
+                      <div className="col-md-12 mb-3">
+                        <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Image</label>
+                        <input type="file" name="file" onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                        {errors.productImage && errors.productImage.length > 0 && (
+                          <span className="addGroup__error">{errors.productImage}</span>
                         )}
                       </div>
 
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Medium Image</label>
-                        <input type="file" name="Mimage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
-                        {errors.Mimage && errors.Mimage.length > 0 && (
-                          <span className="addGroup__error">{errors.Mimage}</span>
-                        )}
-                      </div>
                     </div>
 
                     <div className="form-row">
