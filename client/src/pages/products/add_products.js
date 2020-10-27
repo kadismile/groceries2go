@@ -58,6 +58,7 @@ function AddProduct() {
     let { name, value, files } = event.target;
     let errors = formValues.errors;
     errors[name] = "";
+    console.log("NAME ____", [name])
     setFormValues(prevState => {
       return {
         ...prevState,
@@ -78,7 +79,8 @@ function AddProduct() {
       }
     }
     delete formValues.errors
-
+    console.log("formValues ____", JSON.stringify(formValues))
+    console.log("formValues!!!!112 ____", formValues)
     let formData = new FormData();
     formData.append('name',formValues.name);
     formData.append('description',formValues.description);
@@ -138,8 +140,8 @@ function AddProduct() {
       }
 
       if (val === "productImage") {
-        if (!productImage.name) {
-          errors.productImage = "kndly upload an Image";
+        if (!productImage) {
+          errors.productImage = "kindly upload an Image";
         }
       }
 
@@ -292,7 +294,7 @@ function AddProduct() {
                     <div className="form-row">
                       <div className="col-md-12 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Image</label>
-                        <input type="file" name="file" onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                        <input type="file" name="productImage" onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
                         {errors.productImage && errors.productImage.length > 0 && (
                           <span className="addGroup__error">{errors.productImage}</span>
                         )}

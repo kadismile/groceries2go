@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const randomstring = require("randomstring");
-
+const {ProductBeforeSave} = require('./hooks/product_hooks');
 const ProductSchema = mongoose.Schema({
   _id: {
     type: String,
@@ -22,20 +22,12 @@ const ProductSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please Add product type']
   },
-  brandId: {
-    type: String,
-    required: [true, 'Please Add brand']
-  },
-  brand: {
-    type: String,
-    required: [true, 'Please Add brand']
-  },
   status: {
     type: String,
     default: 'active',
     enum: ["acive", "inactive"]
   },
-  imageUrl: {
+  productImage: {
     type: String,
     required: [true, 'add an image']
   },
@@ -49,5 +41,8 @@ const ProductSchema = mongoose.Schema({
   },
 },{versionKey: false});
 
+ProductSchema.pre("save", async function() {
+  await ProductBeforeSave(this)
+});
 
 module.exports = mongoose.model('Product', ProductSchema);
