@@ -10,6 +10,7 @@ async function client(endpoint, {data, type, headers: customHeaders, ...customCo
   if (type) {
     headers = {
       Authorization: token ? `Bearer ${token}` : undefined,
+      //'Content-Type': 'application/json',
       ...customHeaders,
     }
   } else {
@@ -30,8 +31,8 @@ async function client(endpoint, {data, type, headers: customHeaders, ...customCo
     .then(async response => {
       return await response.json()
     }).catch((err)=>{
-       logout();
-       window.location.replace("/");
+       //logout();
+       //window.location.replace("/");
       })
 }
 

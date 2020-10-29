@@ -4,7 +4,9 @@ const randomstring = require("randomstring");
 const DocumentNumberSchema = mongoose.Schema({
   _id: {
     type: String,
-    default: randomstring.generate(18)
+    default: function() {
+      return randomstring.generate(18);
+    }
   },
   documentType: {
     type: String

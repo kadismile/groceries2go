@@ -1,7 +1,9 @@
 var router = require('express').Router();
-
-router.get('/', function(req, res) {
-  res.send('Index Page');
+const path = require("path")
+;
+router.get('/:image', function(req, res) {
+  res.sendFile(path.join(__dirname, `../public${req.url}`));
+  //res.send('Index Page');
 });
 
 router.get('/about', function(req, res) {

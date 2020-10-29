@@ -19,6 +19,7 @@ import {Header} from "./components/header";
 import {SideBar} from "./components/sidebar";
 import React from "react";
 import {ChurchMemberList} from "./pages/church_members/church_member_list";
+import {ProductList} from "./pages/products/list_products";
 
 function ErrorFallback({error}) {
   return (
@@ -45,7 +46,7 @@ function AuthenticatedApp() {
           <Switch>
             <Route path="/" exact render={props => <Home {...props} />} />
             <Route path="/add-product" exact render={props => <AddProduct {...props} />} />
-            <Route path="/church-members" exact render={props => <ChurchMemberList {...props} />} />
+            <Route path="/products/list" exact render={props => <ProductList {...props} />} />
             <Route path="/add-group" exact render={props => <AddGroupModal {...props} />} />
             <Route path="*" exact render={props => <NotFoud {...props} />} />
           </Switch>

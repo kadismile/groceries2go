@@ -21,6 +21,8 @@ function AddProduct() {
     });
   },[])
 
+  const [submit, setSubmit] = useState(false)
+
   const [categories, setCategories] = useState([]);
 
   const [productType, setProductType] = useState([]);
@@ -58,7 +60,6 @@ function AddProduct() {
     let { name, value, files } = event.target;
     let errors = formValues.errors;
     errors[name] = "";
-    console.log("NAME ____", [name])
     setFormValues(prevState => {
       return {
         ...prevState,
@@ -75,12 +76,23 @@ function AddProduct() {
     validateForm(errors);
     for (let val of Object.values(formValues.errors)) {
       if (val) {
-        setTimeout(()=> setLoading(false), 2000)
+        setLoading(false)
+        return
       }
     }
     delete formValues.errors
-    console.log("formValues ____", JSON.stringify(formValues))
-    console.log("formValues!!!!112 ____", formValues)
+    const {productVariants} = formValues
+    if (!productVariants.length) {
+      toastr.error("Kindly add product variants")
+      setLoading(false)
+      return
+    }
+    let variantImages = []
+    productVariants.forEach((pVariants) => {
+      variantImages.push(pVariants.productVariantImage)
+    })
+    let formFiles = [formValues.productImage[0], ...variantImages[0]]
+
     let formData = new FormData();
     formData.append('name',formValues.name);
     formData.append('description',formValues.description);
@@ -88,27 +100,21 @@ function AddProduct() {
     formData.append('productType',formValues.productType);
     formData.append('categoryId',formValues.categoryId);
     formData.append('category',formValues.category);
-    formData.append('productVariants',formValues.productVariants);
-    for(var x = 0; x < formValues.productImage.length; x++) {
-      formData.append('file', formValues.productImage[x])
+    formData.append('productVariants', JSON.stringify(formValues.productVariants));
+    formData.append('fileCount',formValues.productImage.length);
+    for(var x = 0; x < formFiles.length; x++) {
+      formData.append('file', formFiles[x])
     }
-    setTimeout(async ()=> await createProduct(formData), 1000) ;
-    setLoading(false);
-    return
+    let data = await createProduct(formData);
     setLoading(false)
-    let data;
-    console.log("DATA +++ DATA ", data)
-    if (data.success === false) {
-      toastr.error(data.error);
+    return
+    console.log("status ___", data)
+    if (data.status === "Success") {
+      toastr.success("Product Created Successfully");
       setLoading(false)
-    }
-    if (data.success === "Success") {
-      toastr.success("church member added successfully");
-      setLoading(false)
-      return <Redirect to="/church-members" />
-      /*histoy.push({
-        pathname: '/church-members'
-      })*/
+      //setSubmit(true)
+    } else {
+      toastr.error("Product Created Failed");
     }
   }
 
@@ -142,12 +148,6 @@ function AddProduct() {
       if (val === "productImage") {
         if (!productImage) {
           errors.productImage = "kindly upload an Image";
-        }
-      }
-
-      if (val === "productVariants") {
-        if (productVariants.length === 0) {
-          errors.productVariants = "add product variants";
         }
       }
     }
@@ -237,11 +237,11 @@ function AddProduct() {
   const { errors, productVariants} = formValues;
 
   return (
+    !submit ?
     <div className="main-content">
 
       <div className="page-content">
         <div className="container-fluid">
-
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-flex align-items-center justify-content-between">
@@ -294,7 +294,7 @@ function AddProduct() {
                     <div className="form-row">
                       <div className="col-md-12 mb-3">
                         <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Image</label>
-                        <input type="file" name="productImage" onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                        <input type="file" multiple name="productImage" onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
                         {errors.productImage && errors.productImage.length > 0 && (
                           <span className="addGroup__error">{errors.productImage}</span>
                         )}
@@ -313,6 +313,7 @@ function AddProduct() {
                           }}
                           onChange={ async (option)=> {
                             setFormValues(prevState => {
+                              prevState.errors.productTypeId = ""
                               return {
                                 ...prevState,
                                 productTypeId: option.id,
@@ -338,6 +339,7 @@ function AddProduct() {
                           }}
                           onChange={ async (option)=> {
                             setFormValues(prevState => {
+                              prevState.errors.categoryId = ""
                               return {
                                 ...prevState,
                                 categoryId: option.id,
@@ -446,7 +448,8 @@ function AddProduct() {
       {showModal ? <AddProductVariant toggleModal={displayModal} productVariants={variants} /> : ""}
       {showEditModal ? <EditProductVariant toggleModal={displayEditModal} productVariant={variantToEdit} updateVariant={editVariant} /> : ""}
     </div>
-
+      :
+     <Redirect to="/products" />
   )
 }
 
