@@ -3,12 +3,12 @@ import moment from "moment";
 import {getProducts} from "../../utils/auth-client";
 function ProductList() {
 
-  const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     (async function(){
       const {data} = await getProducts()
-      setUsers(data)
+      setProducts(data)
       const table = document.getElementById('datatable-buttons');
       if (table) {
         window.$('#datatable-buttons').DataTable({
@@ -17,7 +17,6 @@ function ProductList() {
         window.$('input[type=search]').addClass('form-control');
       }
     })()
-
   }, [])
 
   const age = (user) => {
@@ -34,11 +33,11 @@ function ProductList() {
           <div className="row">
             <div className="col-12">
               <div className="page-title-box d-flex align-items-center justify-content-between">
-                <h4 className="mb-0 font-size-18">Datatables</h4>
+                <h4 className="mb-0 font-size-18">Products</h4>
                 <div className="page-title-right">
                   <ol className="breadcrumb m-0">
                     <li className="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li className="breadcrumb-item active">Datatables</li>
+                    <li className="breadcrumb-item active">Products</li>
                   </ol>
                 </div>
               </div>
@@ -46,7 +45,7 @@ function ProductList() {
           </div>
           <div className="row">
             <div className="col-12">
-              <div className="card">
+              {/*<div className="card">
                 <div className="card-body">
 
                   <div id="datatable-buttons_wrapper" className="dataTables_wrapper dt-bootstrap4 no-footer">
@@ -93,6 +92,49 @@ function ProductList() {
                     </div>
 
                   </div>
+                </div>
+              </div>*/}
+              <div className="card">
+                <div className="card-body">
+                  <div className="table-responsive">
+                    <table className="table mb-0">
+                      <thead className="thead-light">
+                      <tr role="row">
+                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                            colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                            aria-label="Name: activate to sort column descending">#
+                        </th>
+                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                            colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                            aria-label="Name: activate to sort column descending">Name
+                        </th>
+                        <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                            colSpan={1} style={{width: '397px'}}
+                            aria-label="Position: activate to sort column ascending">Product Type
+                        </th>
+                        <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                            colSpan={1} style={{width: '202px'}}
+                            aria-label="Office: activate to sort column ascending">Status
+                        </th>
+
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {products.map((product, index)=> {
+                        return (
+                          <tr key={index}>
+                            <th scope="row">{index+1}</th>
+                            <td>{product.name}</td>
+                            <td>{product.productType}</td>
+                            <td>{product.status}</td>
+                          </tr>
+                        )
+                      })}
+
+                      </tbody>
+                    </table>
+                  </div>
+
                 </div>
               </div>
             </div>
