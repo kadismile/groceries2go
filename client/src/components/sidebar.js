@@ -44,7 +44,7 @@ function SideBar() {
                 
   
                 <li>
-                  <a href="index.html" className="waves-effect"><i className='bx bxl-product-hunt'></i><span>Products</span></a>
+                  <Link to="/products/list" className="waves-effect"> <i className='bx bxl-product-hunt'></i><span>Products</span> </Link>
                 </li>
 
                 <li>

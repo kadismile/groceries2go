@@ -74,6 +74,13 @@ function createProduct(data) {
   }
   return client(`${url.BASE_URL}/products/create`, {data, type}).then(data => data)
 }
+function getProducts() {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/`).then(data => data)
+}
 
 function getAllUsers() {
   const token = getToken();
@@ -109,6 +116,6 @@ function logout() {
 }
 
 
-export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,registerUser,
-  getAllUsers, createProduct, getProductType, createProductType}
+export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,
+  registerUser, getAllUsers, createProduct, getProductType, createProductType, getProducts}
 export {logout} from './api-client'

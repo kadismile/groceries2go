@@ -4,7 +4,9 @@ var randomstring = require("randomstring");
 const ProductTypeSchema = mongoose.Schema({
   _id: {
     type: String,
-    default: randomstring.generate(18)
+    default: function() {
+      return randomstring.generate(18);
+    }
   },
   name: {
     type: String,

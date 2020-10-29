@@ -3,13 +3,12 @@ const randomstring = require("randomstring");
 
 const FileSystemSchema = mongoose.Schema({
   _id: {
-    type: String,
-    default: randomstring.generate(18)
+    type: String
   },
   name: {
     type: String,
   },
-  collections: {
+  collectionId: {
     type: String,
   },
   uploadedAt: {
