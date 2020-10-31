@@ -8,6 +8,8 @@ router.post('/update', protect, authorize(permission.USER_PERMISSION),productCon
 router.get('/', protect, authorize(permission.USER_PERMISSION),productController.getProducts);
 router.get('/get/:productId', protect, authorize(permission.USER_PERMISSION),productController.getProductById);
 router.post('/delete', protect, authorize(permission.USER_PERMISSION),productController.deleteProduct);
+router.post('/update-image', protect, authorize(permission.USER_PERMISSION),productController.updateImages);
+
 
 
 router.post('/category/create', protect, authorize(permission.USER_PERMISSION), productController.createCategory);

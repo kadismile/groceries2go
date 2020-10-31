@@ -81,6 +81,14 @@ function updateProduct(data) {
   }
   return client(`${url.BASE_URL}/products/update`, {data}).then(data => data)
 }
+function updateImage(data) {
+  const token = getToken();
+  let type = "image"
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/update-image`, {data, type}).then(data => data)
+}
 function getProducts() {
   const token = getToken();
   if (!token) {
@@ -103,7 +111,6 @@ function getProductById(data) {
   }
   return client(`${url.BASE_URL}/products/get/${data}`).then(data => data)
 }
-
 function getAllUsers() {
   const token = getToken();
   if (!token) {
@@ -140,5 +147,5 @@ function logout() {
 
 export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,
   registerUser, getAllUsers, createProduct, getProductType, createProductType, getProducts,
-  removeProduct, getProductById, updateProduct}
+  removeProduct, getProductById, updateProduct, updateImage}
 export {logout} from './api-client'

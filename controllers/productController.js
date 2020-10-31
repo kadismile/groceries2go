@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const fs = require('fs')
 const randomstring = require("randomstring");
 const {errorHandler} = require("../utils/errors");
 const Product = require('../models/Product');
@@ -213,6 +213,44 @@ exports.getProductType = async (req, res) => {
       status: "success",
       data: pType
     })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+
+};
+
+exports.updateImages = async (req, res) => {
+  try {
+    await setTimeout(()=> uploadFiles(req, res, async (err) => {
+      let doc = req.body;
+      let productImage = await Filesystem.find({})
+
+      if (doc.collection && doc.collection === "product") {
+        const product = await Product.findOne({_id: doc._id})
+        await Product.updateOne(
+          {_id: product._id,
+            $set: { productImage: productImage[0].name }
+          })
+        await Filesystem.deleteMany({})
+        await fs.unlinkSync(`./public/${product.productImage}`)
+      } else {
+        const productVariant = await ProductVariant.findOne({ _id: doc._id })
+        await ProductVariant.updateOne(
+          {_id: productVariant._id,
+            $set: {productVariantImage: productImage[0].name }
+          })
+        await Filesystem.deleteMany({})
+        await fs.unlinkSync(`./public/${productVariant.productVariantImage}`)
+      }
+
+      res.status(200).json({
+        status: "success",
+        data: productImage
+      })
+
+    }), 100)
+
   } catch (e) {
     console.log(`${e}`.red);
     errorHandler(e, res);
