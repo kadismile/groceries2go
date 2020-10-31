@@ -10,6 +10,9 @@ router.get('/get/:productId', protect, authorize(permission.USER_PERMISSION),pro
 router.post('/delete', protect, authorize(permission.USER_PERMISSION),productController.deleteProduct);
 router.post('/update-image', protect, authorize(permission.USER_PERMISSION),productController.updateImages);
 router.post('/upload-product-csv', protect, authorize(permission.USER_PERMISSION),productController.uploadProductCsv);
+router.post('/upload-variant-csv', protect, authorize(permission.USER_PERMISSION),productController.uploadVariantCsv);
+router.post('/delete-variant', protect, authorize(permission.USER_PERMISSION),productController.deleteVariant);
+router.post('/update-variant', protect, authorize(permission.USER_PERMISSION),productController.updateVariant);
 
 
 
