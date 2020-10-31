@@ -3,10 +3,11 @@ import Select from "react-select";
 import Swal from 'sweetalert2'
 import {Redirect} from "react-router-dom";
 import {getCategory, updateProduct, getProductType,
-  getProductById, updateImage} from "../../utils/auth-client";
+  getProductById, updateImage, removeVariant, updateVariant} from "../../utils/auth-client";
 import toastr from "toastr";
 import {AddProductVariant} from "../../components/modals/product_variant/add_product_variant";
 import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
+import {VariantCsvUpload} from "../../components/modals/variant_csv_upload";
 
 function ProductEdit(props) {
 
@@ -24,6 +25,7 @@ function ProductEdit(props) {
     productImage:"",
     errors: {}
   });
+  const [showVariantUploadModal, setShowVariantUploadModal] = useState(false);
   const $ = window.$;
 
   useEffect(()=> {
@@ -54,7 +56,7 @@ function ProductEdit(props) {
         }
       });
     })()
-  },[])
+  },[showVariantUploadModal])
 
   const [submit, setSubmit] = useState(false)
 
@@ -122,7 +124,7 @@ function ProductEdit(props) {
     }
 
     productVariants.forEach( async (pVariants) => {
-      if (typeof pVariants.productVariantImage !== "string") {
+      if (typeof pVariants.productVariantImage !== "string" && typeof pVariants.productVariantImage !== "undefined") {
         let formData = new FormData();
         formData.append('file', pVariants.productVariantImage[0])
         formData.append('_id', pVariants._id)
@@ -191,6 +193,10 @@ function ProductEdit(props) {
     setShowModal(value)
   };
 
+  const displayVariantModal = (value) => {
+    setShowVariantUploadModal(value)
+  };
+
   const displayEditModal = (value) => {
     setEditModal(value)
   };
@@ -206,7 +212,6 @@ function ProductEdit(props) {
     } else {
       productVariants = variants
     }
-    console.log("productVariants", productVariants)
     setFormValues((prevState)=> {
       return {
         ...prevState,
@@ -224,22 +229,23 @@ function ProductEdit(props) {
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'No, keep it'
-    }).then((result) => {
+    }).then( async (result) => {
       if (result.value) {
         for(let variant of productVariants) {
+          removeVariant(productVariants[index])
           productVariants.splice(index, 1);
+          setFormValues((prevState)=> {
+            return {
+              ...prevState,
+              productVariants
+            }
+          })
         }
-        setFormValues((prevState)=> {
-          return {
-            ...prevState,
-            productVariants
-          }
-        })
       }
     })
   }
 
-  const editVariant = (index, variant) => {
+  const editVariant = async (index, variant) => {
     let { productVariants } = formValues
     if (variant) {
       const objIndex = productVariants.findIndex((obj => obj.id === index));
@@ -252,6 +258,8 @@ function ProductEdit(props) {
       productVariants[objIndex].upc = variant.upc
       productVariants[objIndex].description = variant.description
       productVariants[objIndex].productVariantImage = variant.productVariantImage
+      productVariants[objIndex]._id = variant._id
+      await updateVariant(productVariants[objIndex])
       setFormValues((prevState) => {
         return {
           ...prevState,
@@ -285,7 +293,9 @@ function ProductEdit(props) {
                       </button>
                       <div className="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
                            style={{position: "absolute", willChange: "transform", top: "0px", left: "-70px", transform: "translate3d(0px, 36px, 0px)"}}>
-                        <a className="dropdown-item" href="#">Upload Csv</a>
+                        <a href="#" onClick={e => { setShowVariantUploadModal(true) }} className="dropdown-item">
+                          Upload Product Csv
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -478,6 +488,7 @@ function ProductEdit(props) {
 
         {showModal ? <AddProductVariant toggleModal={displayModal} productVariants={variants} /> : ""}
         {showEditModal ? <EditProductVariant toggleModal={displayEditModal} productVariant={variantToEdit} updateVariant={editVariant} /> : ""}
+        {showVariantUploadModal ? <VariantCsvUpload toggleModal={displayVariantModal} /> : ""}
       </div>
       :
       <Redirect to="/products/list" />

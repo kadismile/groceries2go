@@ -47,8 +47,7 @@ const ProductVariantSchema = mongoose.Schema({
     enum: ["active", "inactive"]
   },
   productVariantImage: {
-    type: String,
-    required: [true, 'add product variant image']
+    type: String
   },
   product: {
     type: mongoose.Schema.Types.ObjectId,
