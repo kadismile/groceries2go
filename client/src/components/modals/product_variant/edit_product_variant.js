@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
  */
 function EditProductVariant(props) {
   const {productVariant} = props
-
+  const baseUrl = process.env.REACT_APP_BACKEND_URL
   const $ = window.$
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +17,7 @@ function EditProductVariant(props) {
     inventory: productVariant.inventory,
     uom: productVariant.uom,
     upc: productVariant.upc,
-    productVariantImage: "",
+    productVariantImage: productVariant.productVariantImage,
     errors: {}
   });
 
@@ -69,6 +69,7 @@ function EditProductVariant(props) {
   };
 
   const handlePress = event => {
+    console.log(event.target.value)
     if (event.which !== 46 && (event.which < 48 || event.which > 57)) {
       event.preventDefault();
     }
@@ -178,7 +179,7 @@ function EditProductVariant(props) {
 
                 <div className="col-md-6 mb-3">
                   <input
-                    value={price}
+                    defaultValue={price}
                     type="text"
                     onKeyPress={handlePress}
                     name="price"
@@ -210,7 +211,7 @@ function EditProductVariant(props) {
 
                 <div className="col-md-6 mb-3">
                   <input
-                    value={inventory}
+                    defaultValue={inventory}
                     type="text"
                     onKeyPress={handlePress}
                     name="inventory"
@@ -225,7 +226,7 @@ function EditProductVariant(props) {
               <div className="form-row">
                 <div className="col-md-6 mb-3">
                   <label htmlFor="colFormLabel" style={{paddingLeft: "0px"}}>Product Variant Image</label>
-                  <input type="file" name="productVariantImage" multiple onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
+                  <input type="file" name="productVariantImage" data-default-file={`${baseUrl}/${formValues.productVariantImage}`} onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg" data-max-file-size="500K"/>
                   {errors.productVariantImage && errors.productVariantImage.length > 0 && (
                     <span className="addGroup__error">{errors.productVariantImage}</span>
                   )}
@@ -249,7 +250,7 @@ function EditProductVariant(props) {
                     value={quantityInCase}
                     type="text"
                     onChange={handleChange}
-                    name="inventory"
+                    name="quantityInCase"
                     className="form-control form_name"
                     placeholder="Quantity In Case"
                     required
@@ -261,7 +262,7 @@ function EditProductVariant(props) {
                     value={uom}
                     type="text"
                     onChange={handleChange}
-                    name="code"
+                    name="uom"
                     className="form-control form_name"
                     placeholder="UOM"
                     required
@@ -275,7 +276,7 @@ function EditProductVariant(props) {
                     value={upc}
                     type="text"
                     onChange={handleChange}
-                    name="inventory"
+                    name="upc"
                     className="form-control form_name"
                     placeholder="UPC"
                     required

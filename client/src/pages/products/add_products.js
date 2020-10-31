@@ -89,9 +89,16 @@ function AddProduct() {
     }
     let variantImages = []
     productVariants.forEach((pVariants) => {
-      variantImages.push(pVariants.productVariantImage)
+      variantImages.push(pVariants.productVariantImage[0])
     })
-    let formFiles = [formValues.productImage[0], ...variantImages[0]]
+
+    console.log("variantImages ____ 111222", variantImages)
+
+
+    let formFiles = [formValues.productImage[0], ...variantImages]
+
+    console.log("productVariants ____ AAAAA", formValues.productImage[0])
+    console.log("formFiles ____ BBBB", formFiles)
 
     let formData = new FormData();
     formData.append('name',formValues.name);
@@ -107,9 +114,7 @@ function AddProduct() {
     }
     let data = await createProduct(formData);
     setLoading(false)
-    return
-    console.log("status ___", data)
-    if (data.status === "Success") {
+    if (data && data.status === "Success") {
       toastr.success("Product Created Successfully");
       setLoading(false)
       //setSubmit(true)

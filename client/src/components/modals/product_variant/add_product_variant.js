@@ -267,7 +267,7 @@ function AddProductVariant(props) {
                   <input
                     type="text"
                     onChange={handleChange}
-                    name="inventory"
+                    name="upc"
                     className="form-control form_name"
                     placeholder="UPC"
                     required

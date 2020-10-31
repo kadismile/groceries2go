@@ -9,14 +9,15 @@ const Filesystem = require('../models/Filesystem');
 const kue = require('kue');
 const path = require("path");
 const multer = require("multer");
-const collectionId = randomstring.generate(18)
+
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, `./public`)
   },
   filename: async function(req, file, cb){
-    let _id =  randomstring.generate(18)
-    let image = await Filesystem.create({ _id, collectionId, name: file.originalname, collections: "products" })
+    const _id =  randomstring.generate(18)
+    const name = _id + path.extname(file.originalname)
+    let image = await Filesystem.create({ _id, name, collections: "products" })
     cb(null,  image._id + path.extname(file.originalname));
   },
 });
@@ -35,27 +36,24 @@ exports.addProduct = async (req, res) => {
     }*/
 
     await setTimeout(()=> uploadFiles(req, res, async (err) => {
-
       let doc = req.body;
-      let productImages = await Filesystem.find({collectionId})
+      let productImages = await Filesystem.find({}).sort({"uploadedAt" : -1})
       let {productVariants} = doc
       doc.productImage = productImages[0].name;
       productVariants = JSON.parse(productVariants)
       const product =  await Product.create(doc);
       if (product) {
-        productImages = [productImages.shift()]
-        productImages.forEach((pI)=> {
-          productVariants.forEach((pv)=> {
-            pv.productVariantImage = pI.name
-            pv.productId = product._id
-            ProductVariant.create(pv)
-          })
+        productImages.shift()
+        productImages.forEach( async (pI, index)=> {
+          productVariants[index].productVariantImage = pI.name
+          productVariants[index].productId = product._id
+          await ProductVariant.create(productVariants[index])
         })
+        await Filesystem.deleteMany({})
         res.status(201).json({
           status: 'Success',
           data: product
         });
-
       }
     }), 100)
 
@@ -77,6 +75,61 @@ exports.getProducts = async (req, res) => {
     errorHandler(e, res);
   }
 
+};
+
+exports.getProductById = async (req, res) => {
+  try {
+    const productId = req.params.productId
+    const product = await Product.findOne({_id: productId})
+    const productVariants = await ProductVariant.find({productId: product._id})
+
+    /*.select('name -_id');*/
+    res.status(200).json({
+      status: "success",
+      data: {...product._doc, productVariants}
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const doc = req.body
+    const product = await Product.findOne({_id: doc._id})
+    const productVariant = await ProductVariant.find({productId: product._id})
+
+    /*.select('name -_id');*/
+    res.status(200).json({
+      status: "success",
+      data: {...product._doc, productVariant}
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+}
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const doc = req.body
+
+    await Product.updateOne({_id: doc._id, $set: doc})
+    doc.productVariants.forEach( async (pv)=> {
+      await ProductVariant.updateOne({_id: pv._id, $set: pv})
+    })
+
+    res.status(200).json({
+      status: "Success",
+    });
+
+    console.log(doc)
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
 };
 
 exports.updateUser = async (req, res) => {

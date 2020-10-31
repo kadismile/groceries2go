@@ -24,6 +24,14 @@ const ProductSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please Add product type']
   },
+  categoryId: {
+    type: String,
+    required: [true, 'Please Add categoryId']
+  },
+  category: {
+    type: String,
+    required: [true, 'Please Add category']
+  },
   status: {
     type: String,
     default: 'active',
@@ -31,6 +39,10 @@ const ProductSchema = mongoose.Schema({
   },
   productImage: {
     type: String
+  },
+  productVariant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ProductVariant'
   },
   createdAt: {
     type: Date,

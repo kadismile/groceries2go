@@ -74,12 +74,34 @@ function createProduct(data) {
   }
   return client(`${url.BASE_URL}/products/create`, {data, type}).then(data => data)
 }
+function updateProduct(data) {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/update`, {data}).then(data => data)
+}
 function getProducts() {
   const token = getToken();
   if (!token) {
     return Promise.resolve(null)
   }
   return client(`${url.BASE_URL}/products/`).then(data => data)
+}
+function removeProduct(data) {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  console.log(data)
+  return client(`${url.BASE_URL}/products/delete`, {data}).then(data => data)
+}
+function getProductById(data) {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/get/${data}`).then(data => data)
 }
 
 function getAllUsers() {
@@ -117,5 +139,6 @@ function logout() {
 
 
 export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,
-  registerUser, getAllUsers, createProduct, getProductType, createProductType, getProducts}
+  registerUser, getAllUsers, createProduct, getProductType, createProductType, getProducts,
+  removeProduct, getProductById, updateProduct}
 export {logout} from './api-client'

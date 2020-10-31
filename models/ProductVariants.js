@@ -50,6 +50,10 @@ const ProductVariantSchema = mongoose.Schema({
     type: String,
     required: [true, 'add product variant image']
   },
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+  },
   createdAt: {
     type: Date,
     default: Date.now

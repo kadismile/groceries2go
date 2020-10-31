@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from "react";
-import moment from "moment";
-import {getProducts} from "../../utils/auth-client";
+import {getProducts, removeProduct} from "../../utils/auth-client";
+import Swal from "sweetalert2";
+import {Redirect} from "react-router";
 function ProductList() {
 
   const [products, setProducts] = useState([]);
+
+  const [productToEdit, setProductToEdit] = useState(false)
+  const [productId, setProductId] = useState("")
 
   useEffect(() => {
     (async function(){
@@ -19,15 +23,31 @@ function ProductList() {
     })()
   }, [])
 
-  const age = (user) => {
-    const today = moment().format("Y M D");
-    const age = moment(user.dob).format("Y M D");
-    return moment(today).diff(moment(age), 'years')
+  const editProduct = (id) => {
+    setProductToEdit(true)
+    setProductId(id)
+  }
+
+  const deleteProduct = async (product) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You will not be able to recover this product ${product.name}!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it'
+    }).then( async (result) => {
+      if (result.value) {
+          const result = await removeProduct(product)
+        console.log(result)
+      }
+    })
   }
 
 
   return (
-    <div className="main-content">
+    !productToEdit ?
+      <div className="main-content">
       <div className="page-content">
         <div className="container-fluid">
           <div className="row">
@@ -116,6 +136,10 @@ function ProductList() {
                             colSpan={1} style={{width: '202px'}}
                             aria-label="Office: activate to sort column ascending">Status
                         </th>
+                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                        </th>
+                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                        </th>
 
                       </tr>
                       </thead>
@@ -127,6 +151,16 @@ function ProductList() {
                             <td>{product.name}</td>
                             <td>{product.productType}</td>
                             <td>{product.status}</td>
+                            <td>
+                              <a onClick={() => editProduct(product._id)} style={{color: "#767c82", cursor: "pointer"}}>
+                                <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
+                              </a>
+                            </td>
+                            <td>
+                              <a onClick={()=> deleteProduct(product)} style={{color: "#767c82", cursor: "pointer"}}>
+                                <i className="fa fa-fw fa-trash" data-toggle="tooltip" data-placement="top" title=""data-original-title="remove"></i>
+                              </a>
+                            </td>
                           </tr>
                         )
                       })}
@@ -142,7 +176,8 @@ function ProductList() {
 
         </div>
       </div>
-    </div>
+    </div> :
+      <Redirect to={"/product/edit/"+productId} state={"productId"}/>
   )
 }
 
