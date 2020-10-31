@@ -91,15 +91,7 @@ function AddProduct() {
     productVariants.forEach((pVariants) => {
       variantImages.push(pVariants.productVariantImage[0])
     })
-
-    console.log("variantImages ____ 111222", variantImages)
-
-
     let formFiles = [formValues.productImage[0], ...variantImages]
-
-    console.log("productVariants ____ AAAAA", formValues.productImage[0])
-    console.log("formFiles ____ BBBB", formFiles)
-
     let formData = new FormData();
     formData.append('name',formValues.name);
     formData.append('description',formValues.description);

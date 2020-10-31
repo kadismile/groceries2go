@@ -2,7 +2,8 @@ import React, {useEffect,useState} from 'react'
 import Select from "react-select";
 import Swal from 'sweetalert2'
 import {Redirect} from "react-router-dom";
-import {getCategory, updateProduct, getProductType, getProductById} from "../../utils/auth-client";
+import {getCategory, updateProduct, getProductType,
+  getProductById, updateImage} from "../../utils/auth-client";
 import toastr from "toastr";
 import {AddProductVariant} from "../../components/modals/product_variant/add_product_variant";
 import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
@@ -110,32 +111,29 @@ function ProductEdit(props) {
       return
     }
 
-    /*//update image if there is an update
+    //update image if there is an update
     if (typeof formValues.productImage !== "string") {
-      //update the image
+
+      let formData = new FormData();
+      formData.append('file', formValues.productImage[0])
+      formData.append('_id', productId)
+      formData.append('collection', "product")
+      await updateImage(formData);
     }
 
-    let variantImages = []
-    productVariants.forEach((pVariants) => {
+    productVariants.forEach( async (pVariants) => {
       if (typeof pVariants.productVariantImage !== "string") {
-        //update the product variant image
-        variantImages.push(pVariants.productVariantImage)
+        let formData = new FormData();
+        formData.append('file', pVariants.productVariantImage[0])
+        formData.append('_id', pVariants._id)
+        await updateImage(formData);
       }
     })
-    let formFiles
-    if (variantImages.length && formValues.productImage.length) {
-      formFiles = [formValues.productImage[0], ...variantImages[0]]
-    } else {
-
-    }*/
 
     formValues.productVariants.forEach((pv)=> {
       delete pv.productVariantImage
     })
-
     delete formValues.productImage
-
-    console.log("fform value ___", formValues)
 
     let data = await updateProduct(formValues);
     setLoading(false)
@@ -253,6 +251,7 @@ function ProductEdit(props) {
       productVariants[objIndex].uom = variant.uom
       productVariants[objIndex].upc = variant.upc
       productVariants[objIndex].description = variant.description
+      productVariants[objIndex].productVariantImage = variant.productVariantImage
       setFormValues((prevState) => {
         return {
           ...prevState,
