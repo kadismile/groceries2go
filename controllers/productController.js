@@ -9,6 +9,7 @@ const Filesystem = require('../models/Filesystem');
 const kue = require('kue');
 const path = require("path");
 const multer = require("multer");
+const CSVToJSON = require('csvtojson');
 
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -22,6 +23,7 @@ var storage = multer.diskStorage({
   },
 });
 const uploadFiles = multer({ storage: storage }).array("file");
+
 exports.addProduct = async (req, res) => {
   try {
     let doc = req.body;
@@ -257,3 +259,39 @@ exports.updateImages = async (req, res) => {
   }
 
 };
+
+exports.uploadProductCsv = async (req, res) => {
+  try {
+    await setTimeout(()=> uploadFiles(req, res, async (err) => {
+      let csvFile = await Filesystem.find({})
+      await CSVToJSON().fromFile(`./public/${csvFile[0].name}`)
+        .then(async (products) => {
+          products.forEach(async (product)=> {
+            let productType = await ProductType.findOne({_id: product.productTypeId})
+            let category = await Category.findOne({_id: product.categoryId})
+            if (productType && category) {
+              product.category = category.name
+              product.productType = productType.name
+              await Product.create(product)
+            }
+          })
+          await Filesystem.deleteMany({})
+          await fs.unlinkSync(`./public/${csvFile[0].name}`)
+        }).catch(err => {
+        console.log(err);
+      });
+
+      setTimeout(()=> res.status(200).json({
+        status: "success"
+      }), 3000)
+
+
+    }), 100)
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+
+};
+
+

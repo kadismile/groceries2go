@@ -13,6 +13,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "dotenv": "^8.0.0",
+    "export-to-csv": "^0.2.1",
     "google-libphonenumber": "^3.2.10",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",

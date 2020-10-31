@@ -2,12 +2,16 @@ import React, {useEffect, useState} from "react";
 import {getProducts, removeProduct} from "../../utils/auth-client";
 import Swal from "sweetalert2";
 import {Redirect} from "react-router";
+import {ProductCsvUpload} from "../../components/modals/product_csv_upload";
 function ProductList() {
 
   const [products, setProducts] = useState([]);
 
   const [productToEdit, setProductToEdit] = useState(false)
+
   const [productId, setProductId] = useState("")
+
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     (async function(){
@@ -21,7 +25,7 @@ function ProductList() {
         window.$('input[type=search]').addClass('form-control');
       }
     })()
-  }, [])
+  }, [showModal])
 
   const editProduct = (id) => {
     setProductToEdit(true)
@@ -44,10 +48,15 @@ function ProductList() {
     })
   }
 
+  const displayModal = (value) => {
+    setShowModal(value)
+  };
+
 
   return (
     !productToEdit ?
-      <div className="main-content">
+      <>
+       <div className="main-content">
       <div className="page-content">
         <div className="container-fluid">
           <div className="row">
@@ -55,65 +64,26 @@ function ProductList() {
               <div className="page-title-box d-flex align-items-center justify-content-between">
                 <h4 className="mb-0 font-size-18">Products</h4>
                 <div className="page-title-right">
-                  <ol className="breadcrumb m-0">
-                    <li className="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li className="breadcrumb-item active">Products</li>
-                  </ol>
+                  <div className="btn-group" role="group" style={{marginRight: "80px"}}>
+                    <button id="btnGroupDrop1" type="button" className="btn btn-outline-secondary dropdown-toggle"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Action <i className="mdi mdi-chevron-down"></i>
+                    </button>
+                    <div className="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
+                         style={{position: "absolute", willChange: "transform", top: "0px", left: "-70px", transform: "translate3d(0px, 36px, 0px)"}}>
+
+                      <a href="#" onClick={e => { setShowModal(true) }} className="dropdown-item">
+                        Upload Product Csv
+                      </a>
+
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="row">
             <div className="col-12">
-              {/*<div className="card">
-                <div className="card-body">
-
-                  <div id="datatable-buttons_wrapper" className="dataTables_wrapper dt-bootstrap4 no-footer">
-                    <br/>
-                    <br/>
-                    <div className="row">
-                      <div className="col-sm-12">
-                        <table id="datatable-buttons" className="table table-striped dt-responsive nowrap dataTable no-footer dtr-inline" role="grid" aria-describedby="datatable-buttons_info" style={{width: '1590px'}}>
-                          <thead>
-                          <tr role="row">
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '274px'}} aria-sort="ascending"
-                                aria-label="Name: activate to sort column descending">Name
-                            </th>
-                            <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '397px'}}
-                                aria-label="Position: activate to sort column ascending">Product Type
-                            </th>
-                            <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '202px'}}
-                                aria-label="Office: activate to sort column ascending">Status
-                            </th>
-
-                          </tr>
-                          </thead>
-                          <tbody>
-
-                          {
-                            users.map((user, index)=> { return (
-                              <tr role="row" className="odd" key={index}>
-                                <td tabIndex={0} className="sorting_1">{user.name}</td>
-                                <td>{user.productType}</td>
-                                <td>{user.status}</td>
-                              </tr>
-                            )
-                            })
-
-                          }
-
-
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>*/}
               <div className="card">
                 <div className="card-body">
                   <div className="table-responsive">
@@ -176,8 +146,12 @@ function ProductList() {
 
         </div>
       </div>
-    </div> :
-      <Redirect to={"/product/edit/"+productId} state={"productId"}/>
+    </div>
+       {showModal ? <ProductCsvUpload toggleModal={displayModal}/> : ""}
+      </>
+      :
+       <Redirect to={"/product/edit/"+productId} state={"productId"}/>
+
   )
 }
 
