@@ -20,13 +20,11 @@ function Header() {
       
       <header id="page-topbar">
         <div className="navbar-header">
-        
           <div className="d-flex align-items-left">
             <button type="button" className="btn btn-sm mr-2 d-lg-none px-3 font-size-16 header-item waves-effect"
                     id="vertical-menu-btn">
               <i className="fa fa-fw fa-bars"></i>
             </button>
-          
             <div className="dropdown d-none d-sm-inline-block">
               <button type="button" className="btn header-item waves-effect" id="page-header-user-dropdown"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -78,9 +76,6 @@ function Header() {
                 </form>
               </div>
             </div>
-          
-           
-          
             <div className="dropdown d-inline-block">
               <button type="button" className="btn header-item noti-icon waves-effect"
                       id="page-header-notifications-dropdown" data-toggle="dropdown" aria-haspopup="true"
@@ -149,7 +144,6 @@ function Header() {
                 </div>
               </div>
             </div>
-          
             <div className="dropdown d-inline-block ml-2">
               <button type="button" className="btn header-item waves-effect" id="page-header-user-dropdown"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -171,7 +165,6 @@ function Header() {
                 </a>
               </div>
             </div>
-        
           </div>
         </div>
       </header>

@@ -9,6 +9,7 @@ router.get('/', protect, authorize(permission.USER_PERMISSION),productController
 router.get('/get/:productId', protect, authorize(permission.USER_PERMISSION),productController.getProductById);
 router.post('/delete', protect, authorize(permission.USER_PERMISSION),productController.deleteProduct);
 router.post('/update-image', protect, authorize(permission.USER_PERMISSION),productController.updateImages);
+router.post('/upload-product-csv', protect, authorize(permission.USER_PERMISSION),productController.uploadProductCsv);
 
 
 

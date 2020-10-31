@@ -89,6 +89,14 @@ function updateImage(data) {
   }
   return client(`${url.BASE_URL}/products/update-image`, {data, type}).then(data => data)
 }
+function uploadProductCsv(data) {
+  const token = getToken();
+  let type = "image"
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/upload-product-csv`, {data, type}).then(data => data)
+}
 function getProducts() {
   const token = getToken();
   if (!token) {
@@ -147,5 +155,5 @@ function logout() {
 
 export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,
   registerUser, getAllUsers, createProduct, getProductType, createProductType, getProducts,
-  removeProduct, getProductById, updateProduct, updateImage}
+  removeProduct, getProductById, updateProduct, updateImage, uploadProductCsv}
 export {logout} from './api-client'
