@@ -19,7 +19,8 @@ import {Header} from "./components/header";
 import {SideBar} from "./components/sidebar";
 import React from "react";
 import {ChurchMemberList} from "./pages/church_members/church_member_list";
-import {ProductList} from "./pages/products/list_products";
+import {ProductList} from "./pages/products/products_list";
+import {ProductEdit} from "./pages/products/product_edit";
 
 function ErrorFallback({error}) {
   return (
@@ -47,6 +48,7 @@ function AuthenticatedApp() {
             <Route path="/" exact render={props => <Home {...props} />} />
             <Route path="/add-product" exact render={props => <AddProduct {...props} />} />
             <Route path="/products/list" exact render={props => <ProductList {...props} />} />
+            <Route path="/product/edit/:productId" exact render={props => <ProductEdit {...props} />} />
             <Route path="/add-group" exact render={props => <AddGroupModal {...props} />} />
             <Route path="*" exact render={props => <NotFoud {...props} />} />
           </Switch>

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const randomstring = require("randomstring");
 
 const FileSystemSchema = mongoose.Schema({
   _id: {

@@ -11,7 +11,7 @@ router.get('/:postId', PostController.post_find_one);
 
 router.patch('/:postId', PostController.post_update);
 
-router.delete('/:postId',PostController.post_delete);
+//router.delete('/:postId',PostController.post_delete);
 
 
 module.exports = router;
