@@ -24,5 +24,7 @@ router.post('/upload-category-csv', protect, authorize(permission.USER_PERMISSIO
 
 router.post('/product-type/create', protect, authorize(permission.USER_PERMISSION), productController.createProductType);
 router.get('/product-type', protect, productController.getProductType);
+router.post('/product-type/update', protect, productController.updateProductType);
+router.post('/upload-product-type-csv', protect, authorize(permission.USER_PERMISSION),productController.uploadProductTypeCsv);
 
 module.exports = router;
