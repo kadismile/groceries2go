@@ -23,6 +23,7 @@ import {ProductList} from "./pages/products/products_list";
 import {ProductEdit} from "./pages/products/product_edit";
 import {CategoryList} from "./pages/categories/list_categories";
 import {ProductTypeList} from "./pages/product_type/list_product_type";
+import {UserList} from "./pages/users/user_list";
 
 function ErrorFallback({error}) {
   return (
@@ -54,6 +55,7 @@ function AuthenticatedApp() {
             <Route path="/add-group" exact render={props => <AddGroupModal {...props} />} />
             <Route path="/categories" exact render={props => <CategoryList {...props} />} />
             <Route path="/product-types" exact render={props => <ProductTypeList {...props} />} />
+            <Route path="/users" exact render={props => <UserList {...props} />} />
             <Route path="*" exact render={props => <NotFoud {...props} />} />
           </Switch>
         </Router>

@@ -55,8 +55,7 @@ exports.getCategory = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const {church_group} = req.user;
-    const users = await User.find({church_group}).sort({createdAt: -1});
+    const users = await User.find().sort({createdAt: -1});
     res.status(200).json({
       status: "success",
       data: users
