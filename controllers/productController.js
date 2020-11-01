@@ -236,6 +236,48 @@ exports.getCategory = async (req, res) => {
 
 };
 
+exports.updateCategory = async (req, res) => {
+  try {
+    const doc = req.body
+    await Category.findByIdAndUpdate(doc._id, doc)
+    res.status(200).json({
+      status: "success"
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+
+};
+
+exports.uploadCategoryCsv = async (req, res) => {
+  try {
+    await setTimeout(()=> uploadFiles(req, res, async (err) => {
+      let csvFile = await Filesystem.find({})
+      await CSVToJSON().fromFile(`./public/${csvFile[0].name}`)
+        .then(async (categories) => {
+          categories.forEach(async (cat)=> {
+            await Category.create(cat)
+          })
+          await Filesystem.deleteMany({})
+          await fs.unlinkSync(`./public/${csvFile[0].name}`)
+        }).catch(err => {
+          console.log(err);
+        });
+
+      setTimeout(()=> res.status(200).json({
+        status: "success"
+      }), 3000)
+
+
+    }), 100)
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+
+};
+
 exports.createProductType = async (req, res) => {
   try {
     const doc = req.body;

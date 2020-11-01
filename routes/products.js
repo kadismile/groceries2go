@@ -18,6 +18,9 @@ router.post('/update-variant', protect, authorize(permission.USER_PERMISSION),pr
 
 router.post('/category/create', protect, authorize(permission.USER_PERMISSION), productController.createCategory);
 router.get('/category', protect, productController.getCategory);
+router.post('/category/update', protect, productController.updateCategory);
+router.post('/upload-category-csv', protect, authorize(permission.USER_PERMISSION),productController.uploadProductCsv);
+
 
 router.post('/product-type/create', protect, authorize(permission.USER_PERMISSION), productController.createProductType);
 router.get('/product-type', protect, productController.getProductType);
