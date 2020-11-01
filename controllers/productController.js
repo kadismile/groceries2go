@@ -250,6 +250,20 @@ exports.updateCategory = async (req, res) => {
 
 };
 
+exports.updateProductType = async (req, res) => {
+  try {
+    const doc = req.body
+    await ProductType.findByIdAndUpdate(doc._id, doc)
+    res.status(200).json({
+      status: "success"
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+
+};
+
 exports.uploadCategoryCsv = async (req, res) => {
   try {
     await setTimeout(()=> uploadFiles(req, res, async (err) => {
@@ -374,6 +388,34 @@ exports.uploadVariantCsv = async (req, res) => {
         res.status(200).json({
           status: "success"
         }), 3000)
+
+
+    }), 100)
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+
+};
+
+exports.uploadProductTypeCsv = async (req, res) => {
+  try {
+    await setTimeout(()=> uploadFiles(req, res, async (err) => {
+      let csvFile = await Filesystem.find({})
+      await CSVToJSON().fromFile(`./public/${csvFile[0].name}`)
+        .then(async (productTypes) => {
+          productTypes.forEach(async (pt)=> {
+            await ProductType.create(pt)
+          })
+          await Filesystem.deleteMany({})
+          await fs.unlinkSync(`./public/${csvFile[0].name}`)
+        }).catch(err => {
+          console.log(err);
+        });
+
+      setTimeout(()=> res.status(200).json({
+        status: "success"
+      }), 3000)
 
 
     }), 100)

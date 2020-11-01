@@ -81,6 +81,21 @@ function getProductType() {
   }
   return client(`${url.BASE_URL}/products/product-type`).then(data => data)
 }
+function updateProductType(data) {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/product-type/update`, {data}).then(data => data)
+}
+function uploadProductTypeCsv(data) {
+  const token = getToken();
+  let type = "image"
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/upload-product-type-csv`, {data, type}).then(data => data)
+}
 function createProduct(data) {
   let type = "image"
   const token = getToken();
@@ -193,5 +208,5 @@ function logout() {
 export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,
   registerUser, getAllUsers, createProduct, getProductType, createProductType, getProducts,
   removeProduct, getProductById, updateProduct, updateImage, uploadProductCsv, uploadVariantCsv,
-  removeVariant, updateVariant, updateCategory, uploadCategoryCsv}
+  removeVariant, updateVariant, updateCategory, uploadCategoryCsv, updateProductType, uploadProductTypeCsv}
 export {logout} from './api-client'

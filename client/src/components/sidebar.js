@@ -48,7 +48,7 @@ function SideBar() {
                   <ul className="sub-menu" aria-expanded="false">
                     <li><Link to="/products/list" className="waves-effect"><span>Products</span> </Link></li>
                     <li><Link to="/categories" className="waves-effect"><span>Categories</span> </Link></li>
-                    <li><Link to="/product-type" className="waves-effect"><span>Product Types</span> </Link></li>
+                    <li><Link to="/product-types" className="waves-effect"><span>Product Types</span> </Link></li>
                     <li><Link to="/products/list" className="waves-effect"><span>Inventory  Report</span> </Link></li>
                   </ul>
                 </li>
