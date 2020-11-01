@@ -52,6 +52,21 @@ function createCategory(data) {
   }
   return client(`${url.BASE_URL}/products/category/create`, {data}).then(data => data)
 }
+function updateCategory(data) {
+  const token = getToken();
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/category/update`, {data}).then(data => data)
+}
+function uploadCategoryCsv(data) {
+  const token = getToken();
+  let type = "image"
+  if (!token) {
+    return Promise.resolve(null)
+  }
+  return client(`${url.BASE_URL}/products/upload-category-csv`, {data, type}).then(data => data)
+}
 function createProductType(data) {
   const token = getToken();
   if (!token) {
@@ -178,5 +193,5 @@ function logout() {
 export {login, register, getToken, isLoggedIn, getUser, getCategory, createCategory,
   registerUser, getAllUsers, createProduct, getProductType, createProductType, getProducts,
   removeProduct, getProductById, updateProduct, updateImage, uploadProductCsv, uploadVariantCsv,
-  removeVariant, updateVariant}
+  removeVariant, updateVariant, updateCategory, uploadCategoryCsv}
 export {logout} from './api-client'

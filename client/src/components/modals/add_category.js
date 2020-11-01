@@ -58,6 +58,8 @@ function AddGroupModal(props) {
       setLoading(false)
       $('.form_name').val("");
       toastr.success("category added successfully");
+      $("#addGroup").modal('toggle');
+      props.toggleModal(false);
     } else {
       toastr.error("name of category is empty");
       setLoading(false)
