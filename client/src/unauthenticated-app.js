@@ -49,7 +49,7 @@ function UnauthenticatedApp() {
                         <div className="card-body">
                           <div className="text-center mb-4 mt-3">
                             <h3>
-                              <a href="/">Groceries_2GO</a>
+                              <a href="/">MyGroceries2Go</a>
                             </h3>
                           </div>
                           <form>
