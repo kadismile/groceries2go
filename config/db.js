@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
+const  {constants}  = require("../utils/constants");
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const mongod = new MongoMemoryServer();
-const env = process.env.NODE_ENV;
+const env = constants.NODE_ENV;
 
 
 let connectDB;
 if (env === 'development') {
    connectDB = async() => {
-    const conn = await mongoose.connect(process.env.DB_CONNECTION, {
+    const conn = await mongoose.connect(constants.DB_CONNECTION, {
       useNewUrlParser: true,
       useCreateIndex: true,
       useFindAndModify: false,
