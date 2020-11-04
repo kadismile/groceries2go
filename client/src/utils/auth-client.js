@@ -10,17 +10,14 @@ async function handleUserResponse(data) {
     return [user]
   }
 }
-
 function login({email, password}) {
   return client(url.LOGIN_URL, {data: {email, password}}).then(handleUserResponse)
 }
-
 function register({username, password}) {
   return client('register', {data: {username, password}}).then(
     handleUserResponse,
   )
 }
-
 function getUser() {
   const token = getToken();
   if (!token) {
@@ -37,7 +34,6 @@ function getUser() {
     }
   })
 }
-
 function getCategory() {
   const token = getToken();
   if (!token) {
