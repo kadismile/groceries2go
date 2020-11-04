@@ -57,6 +57,6 @@ exports.UserBeforeSave = async (data) => {
     const salt = await bcrypt.genSalt(10);
     data.password = await bcrypt.hash(data.password, salt);
   }
-  data.userNumber = await data.model('DocumentNumber').getNextSequenceValue("users")
+  //data.userNumber = await data.model('DocumentNumber').getNextSequenceValue("users")
   return data
 }

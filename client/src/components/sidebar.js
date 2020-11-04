@@ -39,7 +39,7 @@ function SideBar() {
                 </li>
   
                 <li>
-                  <Link to="/church-members" className="waves-effect"> <i className='bx bx-group'></i><span>Members</span> </Link>
+                  <Link to="/users" className="waves-effect"> <i className='bx bx-group'></i><span>Users</span> </Link>
                 </li>
 
                 <li>
