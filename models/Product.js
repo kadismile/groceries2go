@@ -26,11 +26,9 @@ const ProductSchema = mongoose.Schema({
   },
   categoryId: {
     type: String,
-    required: [true, 'Please Add categoryId']
   },
   category: {
-    type: String,
-    required: [true, 'Please Add category']
+    type: String
   },
   status: {
     type: String,
