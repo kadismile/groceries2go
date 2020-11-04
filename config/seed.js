@@ -5,8 +5,8 @@ const randomstring = require("randomstring");
 
 seeder.connect(process.env.DB_CONNECTION, function() {
   // Load Mongoose models
-  seeder.loadModels(['models/DocumentNumber.js', 'models/User.js']);
-  seeder.populateModels(userData, function() {
+  seeder.loadModels(['models/DocumentNumber.js', /*'models/User.js'*/]);
+  seeder.populateModels(data, function() {
     seeder.disconnect();
   });
 
