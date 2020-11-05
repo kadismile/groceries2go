@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useAuth} from './context/auth-context'
 import {useForm} from "./hooks/useForm";
 import LaddaButton, { XXL,SLIDE_UP} from 'react-ladda';
+import toastr from 'toastr'
 
 function UnauthenticatedApp() {
   
@@ -30,8 +31,12 @@ function UnauthenticatedApp() {
     },1000);
     
     let {email, password} = values;
-    email = "brianking319@gmail.com";
-    password = "111222333";
+    if (!email || password) {
+      toastr.error("invalid Login details")
+      return
+    }
+    //email = "brianking319@gmail.com";
+    //password = "111222333";
     let x = await login( {email, password});
   }
   
