@@ -31,7 +31,7 @@ function UnauthenticatedApp() {
     },1000);
     
     let {email, password} = values;
-    if (!email || password) {
+    if (!email || !password) {
       toastr.error("invalid Login details")
       return
     }
