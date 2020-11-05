@@ -31,6 +31,9 @@ function ProductEdit(props) {
   useEffect(()=> {
     ( async ()=> {
       let data = await getProductById(productId)
+      if(!data.data) {
+        window.location.replace("/")
+      }
       data = data.data
       //modify product variant
       data.productVariants.forEach((val, index) => val.id = index)
