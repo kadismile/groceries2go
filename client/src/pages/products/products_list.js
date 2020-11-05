@@ -108,8 +108,8 @@ function ProductList() {
                         </th>
                         <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
                         </th>
-                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
-                        </th>
+                        {/*<th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                        </th>*/}
 
                       </tr>
                       </thead>
@@ -126,11 +126,11 @@ function ProductList() {
                                 <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
                               </a>
                             </td>
-                            <td>
+                           {/* <td>
                               <a onClick={()=> deleteProduct(product)} style={{color: "#767c82", cursor: "pointer"}}>
                                 <i className="fa fa-fw fa-trash" data-toggle="tooltip" data-placement="top" title=""data-original-title="remove"></i>
                               </a>
-                            </td>
+                            </td>*/}
                           </tr>
                         )
                       })}
