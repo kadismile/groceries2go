@@ -167,7 +167,7 @@ const sendTokenResponse = async(user, statusCode, res) => {
   const token = await user.getSignedJwtToken();
   const options = {
     expires: new Date(
-        Date.now() + constants.JWT_EXPIRE * 24 * 60 * 60 * 1000
+        Date.now() + constants.JWT_EXPIRE * 24 * 60 * 60 * 100000
     ),
     httpOnly: true
   };
