@@ -16,13 +16,11 @@ function NotFoud() {
                         <div className="mt-4 pt-3 text-center">
                           <div className="row justify-content-center">
                             <div className="col-6 my-4">
-                              <img src="images/404-error.svg" title="invite.svg"/>
+                              CURRENTLY NO DATA
                             </div>
                           </div>
-                          <h3 className="expired-title mb-4 mt-3">Page Not Found</h3>
-                          <p className="text-muted mt-3"> It's looking like you may have taken a wrong turn. Don't
-                            worry... it happens to the best of us. You might want to check your internet
-                            connection. </p>
+                          <h3 className="expired-title mb-4 mt-3">No data to Display</h3>
+                          <p className="text-muted mt-3"> When the resource is filled there will be data to display</p>
                         </div>
                       
                         <div className="mb-3 mt-4 text-center">

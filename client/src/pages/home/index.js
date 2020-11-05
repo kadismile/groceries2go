@@ -42,7 +42,7 @@ function Home() {
                   <div className="card-body">
                     <i className="bx bx-dollar-circle float-right m-0 h2 text-muted"></i>
                     <h6 className="text-muted text-uppercase mt-0">Revenue</h6>
-                    <h3 className="mb-3">$<span data-plugin="counterup">46,782</span></h3>
+                    <h3 className="mb-3">₦<span data-plugin="counterup">46,782</span></h3>
                     <span className="badge badge-danger mr-1"> -29% </span> <span className="text-muted">From previous period</span>
                   </div>
                 </div>
@@ -53,7 +53,7 @@ function Home() {
                   <div className="card-body">
                     <i className="bx bx-bx bx-analyse float-right m-0 h2 text-muted"></i>
                     <h6 className="text-muted text-uppercase mt-0">Average Price</h6>
-                    <h3 className="mb-3">$<span data-plugin="counterup">15.9</span></h3>
+                    <h3 className="mb-3">₦<span data-plugin="counterup">15.9</span></h3>
                     <span className="badge badge-warning mr-1"> 0% </span> <span className="text-muted">From previous period</span>
                   </div>
                 </div>
@@ -132,7 +132,7 @@ function Home() {
                   
                     <div className="row text-center mt-4">
                       <div className="col-6">
-                        <h4>$1875.54</h4>
+                        <h4>₦1875.54</h4>
                         <p className="text-muted mb-0">Revenue</p>
                       </div>
                       <div className="col-6">
@@ -166,7 +166,7 @@ function Home() {
                   
                     <div className="row text-center mt-4">
                       <div className="col-6">
-                        <h4>$7841.12</h4>
+                        <h4>₦7841.12</h4>
                         <p className="text-muted mb-0">Total Revenue</p>
                       </div>
                       <div className="col-6">
@@ -229,7 +229,7 @@ function Home() {
                                    style={{width:"85%"}}></div>
                             </div>
                           </td>
-                          <td className="text-truncate">$ 1200.00</td>
+                          <td className="text-truncate">₦ 1200.00</td>
                         </tr>
                         <tr>
                           <td className="text-truncate">iPad</td>
@@ -245,7 +245,7 @@ function Home() {
                                    style={{width:"72%"}}></div>
                             </div>
                           </td>
-                          <td className="text-truncate">$ 1190.00</td>
+                          <td className="text-truncate">₦ 1190.00</td>
                         </tr>
                         <tr>
                           <td className="text-truncate">OnePlus</td>
@@ -261,7 +261,7 @@ function Home() {
                                    style={{width: "43%"}}></div>
                             </div>
                           </td>
-                          <td className="text-truncate">$ 999.00</td>
+                          <td className="text-truncate">₦ 999.00</td>
                         </tr>
                         <tr>
                           <td className="text-truncate">ZenPad</td>
@@ -277,7 +277,7 @@ function Home() {
                                    style={{ width:"37%" }}></div>
                             </div>
                           </td>
-                          <td className="text-truncate">$ 1150.00</td>
+                          <td className="text-truncate">₦ 1150.00</td>
                         </tr>
                         <tr>
                           <td className="text-truncate">Pixel 2</td>
@@ -293,7 +293,7 @@ function Home() {
                                    style={{width:"82%"}}></div>
                             </div>
                           </td>
-                          <td className="text-truncate">$ 1180.00</td>
+                          <td className="text-truncate">₦ 1180.00</td>
                         </tr>
                         <tr>
                           <td className="text-truncate">Pixel 2</td>
@@ -309,7 +309,7 @@ function Home() {
                                    style={{width:"36%"}}></div>
                             </div>
                           </td>
-                          <td className="text-truncate">$ 1180.00</td>
+                          <td className="text-truncate">₦ 1180.00</td>
                         </tr>
                         </tbody>
                       </table>
@@ -356,7 +356,7 @@ function Home() {
                             <span className="text-muted font-size-12">11 April 2019</span>
                           </td>
                           <td>
-                            <h5 className="font-size-15 mb-1 font-weight-normal">$79.49</h5>
+                            <h5 className="font-size-15 mb-1 font-weight-normal">₦79.49</h5>
                             <span className="text-muted font-size-12">Amount</span>
                           </td>
                           <td>
@@ -378,7 +378,7 @@ function Home() {
                             <span className="text-muted font-size-12">28 Jan 2019</span>
                           </td>
                           <td>
-                            <h5 className="font-size-15 mb-1 font-weight-normal">$1254.00</h5>
+                            <h5 className="font-size-15 mb-1 font-weight-normal">₦1254.00</h5>
                             <span className="text-muted font-size-12">Amount</span>
                           </td>
                           <td>
@@ -400,7 +400,7 @@ function Home() {
                             <span className="text-muted font-size-12">08 Dec 2018</span>
                           </td>
                           <td>
-                            <h5 className="font-size-15 mb-1 font-weight-normal">$784.25</h5>
+                            <h5 className="font-size-15 mb-1 font-weight-normal">₦784.25</h5>
                             <span className="text-muted font-size-12">Amount</span>
                           </td>
                           <td>
@@ -422,7 +422,7 @@ function Home() {
                             <span className="text-muted font-size-12">03 Dec 2018</span>
                           </td>
                           <td>
-                            <h5 className="font-size-15 mb-1 font-weight-normal">$485.24</h5>
+                            <h5 className="font-size-15 mb-1 font-weight-normal">₦485.24</h5>
                             <span className="text-muted font-size-12">Amount</span>
                           </td>
                           <td>
@@ -444,7 +444,7 @@ function Home() {
                             <span className="text-muted font-size-12">12 Nov 2018</span>
                           </td>
                           <td>
-                            <h5 className="font-size-15 mb-1 font-weight-normal">$8964.04</h5>
+                            <h5 className="font-size-15 mb-1 font-weight-normal">₦8964.04</h5>
                             <span className="text-muted font-size-12">Amount</span>
                           </td>
                           <td>

@@ -27,11 +27,11 @@ function SideBar() {
                 </li>
 
                 <li>
-                  <Link to="/church-members" className="waves-effect"> <i className='bx bx-list-ol'></i><span>Transactions</span> </Link>
+                  <Link to="/transactions" className="waves-effect"> <i className='bx bx-list-ol'></i><span>Transactions</span> </Link>
                 </li>
 
                 <li>
-                  <Link to="/church-members" className="waves-effect"> <i className='bx bx-cart'></i><span>Orders</span> </Link>
+                  <Link to="/orders" className="waves-effect"> <i className='bx bx-cart'></i><span>Orders</span> </Link>
                 </li>
 
                 <li>
@@ -52,11 +52,6 @@ function SideBar() {
                     <li><Link to="/products/list" className="waves-effect"><span>Inventory  Report</span> </Link></li>
                   </ul>
                 </li>
-
-                <li>
-                  <a href="index.html" className="waves-effect"><i className='bx bx-git-branch'></i><span>Brands</span></a>
-                </li>
-
 
                {/* <li>
                   <a href="/#" className="has-arrow waves-effect"><i

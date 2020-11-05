@@ -294,7 +294,7 @@ function ProductEdit(props) {
                       <div className="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
                            style={{position: "absolute", willChange: "transform", top: "0px", left: "-70px", transform: "translate3d(0px, 36px, 0px)"}}>
                         <a href="#" onClick={e => { setShowVariantUploadModal(true) }} className="dropdown-item">
-                          Upload Product Csv
+                          Upload Product Var Csv
                         </a>
                       </div>
                     </div>

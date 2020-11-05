@@ -6,7 +6,7 @@ import {AddProductType} from './modals/add_product-type'
 
 function Header() {
   let {user, logout} = useAuth();
-  user = user[0];
+  console.log("user _____", user)
   const [showModal, setShowModal] = useState(false);
   const [showProductType, setShowProductType] = useState(false);
 
@@ -76,7 +76,7 @@ function Header() {
                 </form>
               </div>
             </div>
-            <div className="dropdown d-inline-block">
+            {/*<div className="dropdown d-inline-block">
               <button type="button" className="btn header-item noti-icon waves-effect"
                       id="page-header-notifications-dropdown" data-toggle="dropdown" aria-haspopup="true"
                       aria-expanded="false">
@@ -143,7 +143,7 @@ function Header() {
                   </a>
                 </div>
               </div>
-            </div>
+            </div>*/}
             <div className="dropdown d-inline-block ml-2">
               <button type="button" className="btn header-item waves-effect" id="page-header-user-dropdown"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -7,7 +7,7 @@ async function handleUserResponse(data) {
   window.localStorage.setItem(localStorageKey, data.token);
   const user = await getUser();
   if (user) {
-    return [user]
+    return user
   }
 }
 function login({email, password}) {
