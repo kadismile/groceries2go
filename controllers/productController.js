@@ -16,6 +16,7 @@ var storage = multer.diskStorage({
     callback(null, `./public`)
   },
   filename: async function(req, file, cb){
+    await Filesystem.deleteMany({})
     const _id =  randomstring.generate(18)
     const name = _id + path.extname(file.originalname)
     let image = await Filesystem.create({ _id, name, collections: "products" })
@@ -101,11 +102,10 @@ exports.deleteProduct = async (req, res) => {
   try {
     const doc = req.body
     const product = await Product.findOne({_id: doc._id})
-    const productVariant = await ProductVariant.find({productId: product._id})
+    await Product.deleteOne({_id: product._id})
     /*.select('name -_id');*/
     res.status(200).json({
       status: "success",
-      data: {...product._doc, productVariant}
     })
   } catch (e) {
     console.log(`${e}`.red);
@@ -116,10 +116,13 @@ exports.deleteProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   try {
     const doc = req.body
-    const data = req.body
-    delete data._id
-
-    console.log("data ___", data)
+    const data = {}
+    data.name = doc.name
+    data.description = doc.description
+    data.productTypeId = doc.productTypeId
+    data.productType = doc.productType
+    data.categoryId = doc.categoryId
+    data.category = doc.category
     await Product.findByIdAndUpdate(doc._id, data)
     res.status(200).json({
       status: "Success",
@@ -141,7 +144,9 @@ exports.updateImages = async (req, res) => {
       if (doc.collection && doc.collection === "product") {
         const product = await Product.findOne({_id: doc._id})
         if (product.productImage) {
-          await fs.unlinkSync(`./public/${product.productImage}`)
+          if (fs.existsSync(`./public/${product.productImage}`)) {
+            await fs.unlinkSync(`./public/${product.productImage}`)
+          }
         }
         const data = { productImage: productImage[0].name }
         await Product.findByIdAndUpdate(doc._id, data)
@@ -149,8 +154,11 @@ exports.updateImages = async (req, res) => {
       } else {
         const productVariant = await ProductVariant.findOne({ _id: doc._id })
         if (productVariant.productVariantImage) {
-          await fs.unlinkSync(`./public/${productVariant.productVariantImage}`)
+          if (fs.existsSync(`./public/${productVariant.productVariantImage}`)) {
+            await fs.unlinkSync(`./public/${productVariant.productVariantImage}`)
+          }
         }
+
         const data = { productVariantImage: productImage[0].name }
         await ProductVariant.findByIdAndUpdate(doc._id, data)
         await Filesystem.deleteMany({})
@@ -187,9 +195,19 @@ exports.deleteVariant= async (req, res) => {
 exports.updateVariant= async (req, res) => {
   try {
     const doc = req.body;
-    const data = doc
-    delete data._id
-    await ProductVariant.findByIdAndUpdate(doc._id, data)
+    console.log("BODY ___", req.body)
+    let pvDoc = {}
+    pvDoc.productId = doc.productId
+    pvDoc.name = doc.name
+    pvDoc.description = doc.description
+    pvDoc.price = doc.price
+    pvDoc.code = doc.code
+    pvDoc.quantityInCase = doc.quantityInCase
+    pvDoc.inventory = doc.inventory
+    pvDoc.uom = doc.uom
+    pvDoc.upc = doc.upc
+    console.log("pvDoc __", pvDoc)
+    await ProductVariant.findByIdAndUpdate(doc._id, pvDoc)
     res.status(200).json({
       status: "success"
     })
@@ -336,14 +354,7 @@ exports.uploadProductCsv = async (req, res) => {
       let csvFile = await Filesystem.find({})
       await CSVToJSON().fromFile(`./public/${csvFile[0].name}`)
         .then(async (products) => {
-          console.log("Product ", products)
           products.forEach(async (product)=> {
-
-            let productType = await ProductType.findOne({_id: product.productTypeId})
-            console.log("productType ____", productType)
-
-              //product.productType = productType.name
-              console.log("product 222", product)
               await Product.create(product)
           })
           await Filesystem.deleteMany({})

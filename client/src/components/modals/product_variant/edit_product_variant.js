@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {updateImage} from "../../../utils/auth-client";
 /**
  * @return {string}
  */
@@ -18,6 +19,7 @@ function EditProductVariant(props) {
     uom: productVariant.uom,
     upc: productVariant.upc,
     productVariantImage: productVariant.productVariantImage,
+    _id: productVariant._id,
     errors: {}
   });
 

@@ -9,6 +9,7 @@ import {AddProductVariant} from "../../components/modals/product_variant/add_pro
 import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
 import {VariantCsvUpload} from "../../components/modals/variant_csv_upload";
 
+
 function ProductEdit(props) {
 
   const productId = props.match.params.productId
@@ -118,22 +119,12 @@ function ProductEdit(props) {
 
     //update image if there is an update
     if (typeof formValues.productImage !== "string") {
-
       let formData = new FormData();
       formData.append('file', formValues.productImage[0])
       formData.append('_id', productId)
       formData.append('collection', "product")
       await updateImage(formData);
     }
-
-    productVariants.forEach( async (pVariants) => {
-      if (typeof pVariants.productVariantImage !== "string" && typeof pVariants.productVariantImage !== "undefined") {
-        let formData = new FormData();
-        formData.append('file', pVariants.productVariantImage[0])
-        formData.append('_id', pVariants._id)
-        await updateImage(formData);
-      }
-    })
 
     formValues.productVariants.forEach((pv)=> {
       delete pv.productVariantImage
@@ -263,6 +254,15 @@ function ProductEdit(props) {
       productVariants[objIndex].productVariantImage = variant.productVariantImage
       productVariants[objIndex]._id = variant._id
       await updateVariant(productVariants[objIndex])
+
+      if (typeof variant.productVariantImage !== "string" && typeof variant.productVariantImage !== "undefined") {
+        let formData = new FormData();
+        formData.append('file',  productVariants[objIndex].productVariantImage[0])
+        formData.append('_id', variant._id)
+        await updateImage(formData);
+      }
+
+
       setFormValues((prevState) => {
         return {
           ...prevState,
