@@ -31,8 +31,8 @@ async function client(endpoint, {data, type, headers: customHeaders, ...customCo
     .then(async response => {
       return await response.json()
     }).catch((err)=>{
-       logout();
-       window.location.replace("/");
+       //logout();
+       //window.location.replace("/");
       })
 }
 
