@@ -18,11 +18,11 @@ const ProductSchema = mongoose.Schema({
   },
   productTypeId: {
     type: String,
-    required: [true, 'Please Add product type']
+    //required: [true, 'Please Add product type']
   },
   productType: {
     type: String,
-    required: [true, 'Please Add product type']
+    //required: [true, 'Please Add product type']
   },
   categoryId: {
     type: String,

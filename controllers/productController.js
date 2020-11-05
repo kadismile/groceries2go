@@ -16,7 +16,6 @@ var storage = multer.diskStorage({
     callback(null, `./public`)
   },
   filename: async function(req, file, cb){
-    await Filesystem.deleteMany({})
     const _id =  randomstring.generate(18)
     const name = _id + path.extname(file.originalname)
     let image = await Filesystem.create({ _id, name, collections: "products" })
@@ -119,6 +118,8 @@ exports.updateProduct = async (req, res) => {
     const doc = req.body
     const data = req.body
     delete data._id
+
+    console.log("data ___", data)
     await Product.findByIdAndUpdate(doc._id, data)
     res.status(200).json({
       status: "Success",
@@ -335,12 +336,15 @@ exports.uploadProductCsv = async (req, res) => {
       let csvFile = await Filesystem.find({})
       await CSVToJSON().fromFile(`./public/${csvFile[0].name}`)
         .then(async (products) => {
+          console.log("Product ", products)
           products.forEach(async (product)=> {
+
             let productType = await ProductType.findOne({_id: product.productTypeId})
-            if (productType) {
-              product.productType = productType.name
+            console.log("productType ____", productType)
+
+              //product.productType = productType.name
+              console.log("product 222", product)
               await Product.create(product)
-            }
           })
           await Filesystem.deleteMany({})
           await fs.unlinkSync(`./public/${csvFile[0].name}`)
