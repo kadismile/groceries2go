@@ -355,7 +355,7 @@ exports.uploadProductCsv = async (req, res) => {
       await CSVToJSON().fromFile(`./public/${csvFile[0].name}`)
         .then(async (products) => {
           products.forEach(async (product)=> {
-              await Product.create(product)
+              await Category.create(product)
           })
           await Filesystem.deleteMany({})
           await fs.unlinkSync(`./public/${csvFile[0].name}`)
