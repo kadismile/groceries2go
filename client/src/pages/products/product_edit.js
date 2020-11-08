@@ -1,13 +1,14 @@
 import React, {useEffect,useState} from 'react'
 import Select from "react-select";
 import Swal from 'sweetalert2'
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {getCategory, updateProduct, getProductType,
   getProductById, updateImage, removeVariant, updateVariant} from "../../utils/auth-client";
 import toastr from "toastr";
 import {AddProductVariant} from "../../components/modals/product_variant/add_product_variant";
 import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
 import {VariantCsvUpload} from "../../components/modals/variant_csv_upload";
+import {Loader} from "../../components/lib";
 
 
 function ProductEdit(props) {
@@ -281,213 +282,219 @@ function ProductEdit(props) {
     !submit ?
       <div className="main-content">
 
-        {formValues._id ?  <div className="page-content">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-12">
-                <div className="page-title-box d-flex align-items-center justify-content-between">
-                  <h4 className="mb-0 font-size-18">Add a Prouct</h4>
+        {
+          !formValues._id ?
+          <Loader /> : <div className="page-content">
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-12">
+                  <div className="page-title-box d-flex align-items-center justify-content-between sticky">
+                    <h4 className="mb-0 font-size-18">Add a Prouct</h4>
 
-                  <div className="page-title-right">
-                    <div className="btn-group" role="group" style={{marginRight: "80px"}}>
-                      <button id="btnGroupDrop1" type="button" className="btn btn-outline-secondary dropdown-toggle"
-                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Action <i className="mdi mdi-chevron-down"></i>
-                      </button>
-                      <div className="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
-                           style={{position: "absolute", willChange: "transform", top: "0px", left: "-70px", transform: "translate3d(0px, 36px, 0px)"}}>
-                        <a href="#" onClick={e => { setShowVariantUploadModal(true) }} className="dropdown-item">
-                          Upload Product Var Csv
-                        </a>
+                    <div className="page-title-right">
+                      <div className="btn-group" role="group">
+                        {!loading ?
+                          <button
+                            type="button"
+                            onClick={handleSubmit}
+                            className="btn btn-primary btn-large waves-effect waves-light"
+                            style={{ margin: "auto", display: "block", width: "200px", height: "37px", marginRight: "10px"}}
+                          >
+                            Update Product
+                          </button> :
+                          <button type="button"
+                                  className="btn btn-primary btn-large waves-effect waves-light"
+                                  style={{margin: "auto", display: "block", width: "200px", height: "37px", opacity: "0.4", marginRight: "10px"}}>
+                            Updating Product .....
+                          </button>
+                        }
+
+                        <div className="dropdown d-inline-block ml-2">
+                          <button type="button" className="btn btn-outline-secondary dropdown-toggle" id="page-header-user-dropdown"
+                                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span className="d-none d-sm-inline-block ml-1">Action</span>
+                            <i className="mdi mdi-chevron-down d-none d-sm-inline-block"></i>
+                          </button>
+                          <div className="dropdown-menu dropdown-menu-right">
+                            <Link to="/products/list" className="dropdown-item">
+                              Product List
+                            </Link>
+                            <a href="#" onClick={() => { setShowVariantUploadModal(true) }} className="dropdown-item">
+                              Upload Product Var Csv
+                            </a>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
-                  </div>
 
+                  </div>
                 </div>
               </div>
-            </div>
 
 
-            <div className="row">
-              <div className="col-12">
-                <div className="card">
-                  <div className="card-body" style={{padding: "4.25rem"}}>
-                    <form className="needs-validation" noValidate>
-                      <div className="form-row">
-                        <div className="col-md-12 mb-3">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Name</label>
-                          <input type="text" onChange={handleChange} name="name" value={formValues.name} className="form-control" id="colFormLabel"/>
-                          {errors.name && errors.name.length > 0 && (
-                            <span className="addGroup__error">{errors.name}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="form-row">
-                        <div className="col-md-12 mb-3">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Description</label>
-                          <textarea className="form-control" value={formValues.description} id="exampleFormControlTextarea1" onChange={handleChange} name="description" rows="3"></textarea>
-                          {errors.description && errors.description.length > 0 && (
-                            <span className="addGroup__error">{errors.description}</span>
-                          )}
+              <div className="row">
+                <div className="col-12">
+                  <div className="card">
+                    <div className="card-body" style={{padding: "4.25rem"}}>
+                      <form className="needs-validation" noValidate>
+                        <div className="form-row">
+                          <div className="col-md-12 mb-3">
+                            <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Name</label>
+                            <input type="text" onChange={handleChange} name="name" value={formValues.name} className="form-control" id="colFormLabel"/>
+                            {errors.name && errors.name.length > 0 && (
+                              <span className="addGroup__error">{errors.name}</span>
+                            )}
+                          </div>
                         </div>
 
-                      </div>
+                        <div className="form-row">
+                          <div className="col-md-12 mb-3">
+                            <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Description</label>
+                            <textarea className="form-control" value={formValues.description} id="exampleFormControlTextarea1" onChange={handleChange} name="description" rows="3"></textarea>
+                            {errors.description && errors.description.length > 0 && (
+                              <span className="addGroup__error">{errors.description}</span>
+                            )}
+                          </div>
 
-                      <div className="form-row">
-                        <div className="col-md-12 mb-3">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Image</label>
-                          <input type="file" multiple name="productImage" onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg"
-                                 data-max-file-size="500K" data-default-file={`${baseUrl}/${formValues.productImage}`}/>
-                          {errors.productImage && errors.productImage.length > 0 && (
-                            <span className="addGroup__error">{errors.productImage}</span>
-                          )}
                         </div>
 
-                      </div>
+                        <div className="form-row">
+                          <div className="col-md-12 mb-3">
+                            <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Image</label>
+                            <input type="file" multiple name="productImage" onChange={handleChange} className="dropify" data-height="150" data-allowed-file-extensions="jpg png jpeg"
+                                   data-max-file-size="500K" data-default-file={`${baseUrl}/${formValues.productImage}`}/>
+                            {errors.productImage && errors.productImage.length > 0 && (
+                              <span className="addGroup__error">{errors.productImage}</span>
+                            )}
+                          </div>
 
-                      <div className="form-row">
-                        <div className="col-md-6 mb-3">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Type</label>
-                          <Select
-                            value={{ label: formValues.productType || "Product Type" }}
-                            onMenuOpen={ async ()=>{
-                              let data = await getProductType();
-                              setProductType(data.data);
-                            }}
-                            onChange={ async (option)=> {
-                              setFormValues(prevState => {
-                                prevState.errors.productTypeId = ""
-                                return {
-                                  ...prevState,
-                                  productTypeId: option.id,
-                                  productType: option.value
-                                }
-                              })
-                            }}
-                            options={productTypeOptions}
-                            name="productTypeId"
-                          />
-                          {errors.productTypeId && errors.productTypeId.length > 0 && (
-                            <span className="addGroup__error">{errors.productTypeId}</span>
-                          )}
                         </div>
 
-                        <div className="col-md-6 mb-3">
-                          <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Category</label>
-                          <Select
-                            value={{ label: formValues.category || "Category" }}
-                            onMenuOpen={ async ()=>{
-                              let data = await getCategory();
-                              setCategories(data.data);
-                            }}
-                            onChange={ async (option)=> {
-                              setFormValues(prevState => {
-                                prevState.errors.categoryId = ""
-                                return {
-                                  ...prevState,
-                                  categoryId: option.id,
-                                  category: option.value,
-                                }
-                              })
-                            }}
-                            options={categoryOptions}
-                            name="categoryId"
-                          />
-                          {errors.categoryId && errors.categoryId.length > 0 && (
-                            <span className="addGroup__error">{errors.categoryId}</span>
-                          )}
+                        <div className="form-row">
+                          <div className="col-md-6 mb-3">
+                            <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Product Type</label>
+                            <Select
+                              value={{ label: formValues.productType || "Product Type" }}
+                              onMenuOpen={ async ()=>{
+                                let data = await getProductType();
+                                setProductType(data.data);
+                              }}
+                              onChange={ async (option)=> {
+                                setFormValues(prevState => {
+                                  prevState.errors.productTypeId = ""
+                                  return {
+                                    ...prevState,
+                                    productTypeId: option.id,
+                                    productType: option.value
+                                  }
+                                })
+                              }}
+                              options={productTypeOptions}
+                              name="productTypeId"
+                            />
+                            {errors.productTypeId && errors.productTypeId.length > 0 && (
+                              <span className="addGroup__error">{errors.productTypeId}</span>
+                            )}
+                          </div>
+
+                          <div className="col-md-6 mb-3">
+                            <label htmlFor="colFormLabel" className="col-sm-2 col-form-label" style={{paddingLeft: "0px"}}>Category</label>
+                            <Select
+                              value={{ label: formValues.category || "Category" }}
+                              onMenuOpen={ async ()=>{
+                                let data = await getCategory();
+                                setCategories(data.data);
+                              }}
+                              onChange={ async (option)=> {
+                                setFormValues(prevState => {
+                                  prevState.errors.categoryId = ""
+                                  return {
+                                    ...prevState,
+                                    categoryId: option.id,
+                                    category: option.value,
+                                  }
+                                })
+                              }}
+                              options={categoryOptions}
+                              name="categoryId"
+                            />
+                            {errors.categoryId && errors.categoryId.length > 0 && (
+                              <span className="addGroup__error">{errors.categoryId}</span>
+                            )}
+                          </div>
+
+
                         </div>
 
+                        <br/>
+                        <button type="button" onClick={e => { setShowModal(true) }}  className="btn btn-success waves-effect waves-light" style={{float: "right"}}> <i className='bx bx-plus'></i> Add Variant </button>
+                        {errors.productVariants && errors.productVariants.length > 0 && (
+                          <span className="addGroup__error">{errors.productVariants}</span>
+                        )}
+                        <br/>
+                        <br/>
+                        <br/>
 
-                      </div>
+                        {
+                          !productVariants.length ? <Loader />
+                            : <div className="col-xl-12">
+                              <div className="card">
+                                <div className="card-body">
+                                  <div className="table-responsive">
+                                    <table className="table table-borderless mb-0">
+                                      <thead className="thead-light">
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Variant Name</th>
+                                        <th>Code</th>
+                                        <th>Price</th>
+                                        <th></th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      {productVariants.map((variant, index)=> {
+                                        return (
+                                          <tr key={index}>
+                                            <th scope="row">{index + 1}</th>
+                                            <td>{variant.name}</td>
+                                            <td>{variant.code}</td>
+                                            <td>{variant.price}</td>
 
-                      <br/>
-                      <button type="button" onClick={e => { setShowModal(true) }}  className="btn btn-success waves-effect waves-light" style={{float: "right"}}> <i className='bx bx-plus'></i> Add Variant </button>
-                      {errors.productVariants && errors.productVariants.length > 0 && (
-                        <span className="addGroup__error">{errors.productVariants}</span>
-                      )}
-                      <br/>
-                      <br/>
-                      <br/>
+                                            <td style={{float: "right"}}>
+                                              <a onClick={() => editVariant(index)} style={{color: "#767c82", cursor: "pointer"}}>
+                                                <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
+                                              </a>
+                                            </td>
 
-                      {
-                        productVariants.length ?
-                          <div className="col-xl-12">
-                            <div className="card">
-                              <div className="card-body">
-                                <div className="table-responsive">
-                                  <table className="table table-borderless mb-0">
-                                    <thead className="thead-light">
-                                    <tr>
-                                      <th>#</th>
-                                      <th>Variant Name</th>
-                                      <th>Code</th>
-                                      <th>Price</th>
-                                      <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {productVariants.map((variant, index)=> {
-                                      return (
-                                        <tr key={index}>
-                                          <th scope="row">{index + 1}</th>
-                                          <td>{variant.name}</td>
-                                          <td>{variant.code}</td>
-                                          <td>{variant.price}</td>
+                                            <td style={{float: "right"}}>
+                                              <a onClick={()=> deleteVariant(variant.id)} style={{color: "#767c82", cursor: "pointer"}}>
+                                                <i className="fa fa-fw fa-trash" data-toggle="tooltip" data-placement="top" title=""data-original-title="remove"></i>
+                                              </a>
+                                            </td>
 
-                                          <td style={{float: "right"}}>
-                                            <a onClick={() => editVariant(index)} style={{color: "#767c82", cursor: "pointer"}}>
-                                              <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
-                                            </a>
-                                          </td>
+                                          </tr>
+                                        )
+                                      })}
 
-                                          <td style={{float: "right"}}>
-                                            <a onClick={()=> deleteVariant(variant.id)} style={{color: "#767c82", cursor: "pointer"}}>
-                                              <i className="fa fa-fw fa-trash" data-toggle="tooltip" data-placement="top" title=""data-original-title="remove"></i>
-                                            </a>
-                                          </td>
-
-                                        </tr>
-                                      )
-                                    })}
-
-                                    </tbody>
-                                  </table>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div> : ""
-                      }
+                        }
 
-
-                      <br/>
-                      <br/>
-
-                      {!loading ?
-                        <button
-                          type="button"
-                          onClick={handleSubmit}
-                          className="btn btn-primary btn-large waves-effect waves-light"
-                          style={{ margin: "auto", display: "block", width: "200px" }}
-                        >
-                          Update Product
-                        </button> :
-                        <button type="button"
-                                className="btn btn-primary btn-large waves-effect waves-light"
-                                style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}>
-                          Updating Product .....
-                        </button>
-                      }
-                    </form>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
 
           </div>
-
-        </div> : ""}
+        }
 
         {showModal ? <AddProductVariant toggleModal={displayModal} productVariants={variants} /> : ""}
         {showEditModal ? <EditProductVariant toggleModal={displayEditModal} productVariant={variantToEdit} updateVariant={editVariant} /> : ""}

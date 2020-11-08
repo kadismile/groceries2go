@@ -31,12 +31,12 @@ function UnauthenticatedApp() {
     },1000);
     
     let {email, password} = values;
-    if (!email || !password) {
+    /*if (!email || !password) {
       toastr.error("invalid Login details")
       return
-    }
-    //email = "brianking319@gmail.com";
-    //password = "111222333";
+    }*/
+    email = "brianking319@gmail.com";
+    password = "111222333";
     let x = await login( {email, password});
   }
   

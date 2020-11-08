@@ -101,12 +101,23 @@ exports.getProductById = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const doc = req.body
-    const product = await Product.findOne({_id: doc._id})
-    await Product.deleteOne({_id: product._id})
-    /*.select('name -_id');*/
-    res.status(200).json({
-      status: "success",
-    })
+    console.log(typeof  doc)
+    console.log(doc)
+    if(typeof doc === "object") {
+      doc.forEach( async (_id) => {
+        await Product.deleteOne({ _id })
+      })
+      res.status(200).json({
+        status: "success",
+      })
+    } else {
+      const product = await Product.findOne({_id: doc._id})
+      await Product.deleteOne({_id: product._id})
+      res.status(200).json({
+        status: "success",
+      })
+    }
+
   } catch (e) {
     console.log(`${e}`.red);
     errorHandler(e, res);

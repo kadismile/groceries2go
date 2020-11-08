@@ -55,6 +55,22 @@ function FullPageSpinner() {
   )
 }
 
+function Loader() {
+  return (
+    <div
+      css={{
+        fontSize: '4em',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div className="spinner-border loader-border text-primary m-2" role="status"></div>
+    </div>
+  )
+}
+
 const Link = styled(RouterLink)({
   color: "indigo",
   ':hover': {
@@ -115,4 +131,5 @@ export {
   FormGroup,
   FullPageSpinner,
   Link,
+  Loader
 }

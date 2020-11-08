@@ -120,3 +120,29 @@
     text-overflow: ellipsis;
     color: #346de0;
 }
+
+.loader-spinner {
+    height: 3rem;
+    width: 3rem;
+}
+
+.loader-border {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    border: 0.05em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: spinner-border .75s linear infinite;
+    animation: spinner-border .75s linear infinite
+}
+
+.sticky {
+    background: #f5f7fa;
+    position: fixed;
+    padding: 30px;
+    z-index: 2;
+    display: block;
+    width: 85%;
+}

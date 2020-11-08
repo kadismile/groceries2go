@@ -1,11 +1,12 @@
 import React, {useEffect,useState} from 'react'
 import Select from "react-select";
 import Swal from 'sweetalert2'
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {getCategory, createProduct, getProductType} from "../../utils/auth-client";
 import toastr from "toastr";
 import {AddProductVariant} from "../../components/modals/product_variant/add_product_variant";
 import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
+import {VariantCsvUpload} from "../../components/modals/variant_csv_upload";
 
 function AddProduct() {
   const $ = window.$;
@@ -46,6 +47,8 @@ function AddProduct() {
   const [variantToEdit, setVariantToEdit] = useState([])
 
   const [showEditModal, setEditModal] = useState(false);
+
+  const [showVariantUploadModal, setShowVariantUploadModal] = useState(false);
 
   const productTypeOptions = productType.map((pt)=> {
     return {value: pt.name, label: pt.name, id: pt._id}
@@ -164,6 +167,10 @@ function AddProduct() {
     setEditModal(value)
   };
 
+  const displayVariantModal = (value) => {
+    setShowVariantUploadModal(value)
+  };
+
   const variants = (variants) => {
     variants = variants || []
     let { productVariants } = formValues
@@ -241,24 +248,53 @@ function AddProduct() {
         <div className="container-fluid">
           <div className="row">
             <div className="col-12">
-              <div className="page-title-box d-flex align-items-center justify-content-between">
-                <h4 className="mb-0 font-size-18">Add a Product</h4>
+              <div className="page-title-box d-flex align-items-center justify-content-between sticky">
+                <h4 className="mb-0 font-size-18">Add a Prouct</h4>
+
                 <div className="page-title-right">
-                  <div className="btn-group" role="group" style={{marginRight: "80px"}}>
-                    <button id="btnGroupDrop1" type="button" className="btn btn-outline-secondary dropdown-toggle"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Action <i className="mdi mdi-chevron-down"></i>
-                    </button>
-                    <div className="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
-                         style={{position: "absolute", willChange: "transform", top: "0px", left: "-70px", transform: "translate3d(0px, 36px, 0px)"}}>
-                      <a className="dropdown-item" href="#">Upload Csv</a>
+                  <div className="btn-group" role="group">
+                    {!loading ?
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="btn btn-primary btn-large waves-effect waves-light"
+                        style={{ margin: "auto", display: "block", width: "200px", height: "37px", marginRight: "10px"}}
+                      >
+                        Add Product
+                      </button> :
+                      <button type="button"
+                              className="btn btn-primary btn-large waves-effect waves-light"
+                              style={{margin: "auto", display: "block", width: "200px", height: "37px", opacity: "0.4", marginRight: "10px"}}>
+                        Add Product .....
+                      </button>
+                    }
+
+                    <div className="dropdown d-inline-block ml-2">
+                      <button type="button" className="btn btn-outline-secondary dropdown-toggle" id="page-header-user-dropdown"
+                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span className="d-none d-sm-inline-block ml-1">Action</span>
+                        <i className="mdi mdi-chevron-down d-none d-sm-inline-block"></i>
+                      </button>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <Link to="/products/list" className="dropdown-item">
+                          Product List
+                        </Link>
+                        <a href="#" onClick={() => { setShowVariantUploadModal(true) }} className="dropdown-item">
+                          Upload Product Var Csv
+                        </a>
+                        {/*<a href="#" onClick={() => { setShowVariantUploadModal(true) }} className="dropdown-item">
+                          Upload Product Var Csv
+                        </a>*/}
+
+                      </div>
                     </div>
+
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
-
 
           <div className="row">
             <div className="col-12">
@@ -415,22 +451,6 @@ function AddProduct() {
 
                     <br/>
                     <br/>
-
-                    {!loading ?
-                      <button
-                        type="button"
-                        onClick={handleSubmit}
-                        className="btn btn-primary btn-large waves-effect waves-light"
-                        style={{ margin: "auto", display: "block", width: "200px" }}
-                      >
-                        Add Product
-                      </button> :
-                      <button type="button"
-                              className="btn btn-primary btn-large waves-effect waves-light"
-                              style={{margin: "auto", display: "block", width: "200px", opacity: "0.4"}}>
-                        Adding Product .....
-                      </button>
-                    }
                   </form>
                 </div>
               </div>
@@ -442,6 +462,7 @@ function AddProduct() {
       </div>
       {showModal ? <AddProductVariant toggleModal={displayModal} productVariants={variants} /> : ""}
       {showEditModal ? <EditProductVariant toggleModal={displayEditModal} productVariant={variantToEdit} updateVariant={editVariant} /> : ""}
+      {showVariantUploadModal ? <VariantCsvUpload toggleModal={displayVariantModal} /> : ""}
     </div>
       :
      <Redirect to="/products" />
