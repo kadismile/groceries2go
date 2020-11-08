@@ -4,6 +4,7 @@ import {EditProductType} from "./edit_product_type_modal";
 import {AddGroupModal} from "../../components/modals/add_category";
 import {ProductTypeCsvUpload} from "./create_product_type_csv_modal";
 import {AddProductTypeModal} from "./add_product_type_modal";
+import {Loader} from "../../components/lib";
 function ProductTypeList() {
 
   const [productType, setProductType] = useState([]);
@@ -60,80 +61,84 @@ function ProductTypeList() {
                         <div className="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
                              style={{position: "absolute", willChange: "transform", top: "0px", left: "-70px", transform: "translate3d(0px, 36px, 0px)"}}>
 
-                          <a href="#" onClick={e => { setAddCatModal(true) }} className="dropdown-item notify-item">
-                            Add Product Type
-                          </a>
-                          <a href="#" onClick={e => { setshowCsvModal(true) }} className="dropdown-item">
-                            Upload Product Type Csv
-                          </a>
+                            <a href="#" onClick={e => { setAddCatModal(true) }} className="dropdown-item notify-item">
+                              Add Product Type
+                            </a>
+                            <a href="#" onClick={e => { setshowCsvModal(true) }} className="dropdown-item">
+                              Upload Product Type Csv
+                            </a>
 
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
               <div className="row">
                 <div className="col-12">
                   <div className="card">
                     <div className="card-body">
-                      <div className="table-responsive">
-                        <table className="table mb-0">
-                          <thead className="thead-light">
-                          <tr role="row">
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '274px'}} aria-sort="ascending"
-                                aria-label="Name: activate to sort column descending">#
-                            </th>
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '274px'}} aria-sort="ascending"
-                                aria-label="Name: activate to sort column descending">Name
-                            </th>
-                            <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '397px'}}
-                                aria-label="Position: activate to sort column ascending">Id
-                            </th>
+                      {
+                        !productType.length ? <Loader /> :
+                          <div className="table-responsive">
+                          <table className="table mb-0">
+                            <thead className="thead-light">
+                            <tr role="row">
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                  colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                                  aria-label="Name: activate to sort column descending">#
+                              </th>
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                  colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                                  aria-label="Name: activate to sort column descending">Name
+                              </th>
+                              <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                  colSpan={1} style={{width: '397px'}}
+                                  aria-label="Position: activate to sort column ascending">Id
+                              </th>
 
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
-                            </th>
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
-                            </th>
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                              </th>
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                              </th>
 
-                          </tr>
-                          </thead>
-                          <tbody>
-                          {productType.map((cat, index)=> {
-                            return (
-                              <tr key={index}>
-                                <th scope="row">{index+1}</th>
-                                <td>{cat.name}</td>
-                                <td>{cat._id}</td>
-                                <td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {productType.map((cat, index)=> {
+                              return (
+                                <tr key={index}>
+                                  <th scope="row">{index+1}</th>
+                                  <td>{cat.name}</td>
+                                  <td>{cat._id}</td>
+                                  <td>
 
-                                  <a onClick={() => editCategory(index)} style={{color: "#767c82", cursor: "pointer"}}>
-                                    <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
-                                  </a>
+                                    <a onClick={() => editCategory(index)} style={{color: "#767c82", cursor: "pointer"}}>
+                                      <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
+                                    </a>
 
-                                </td>
-                                <td>
+                                  </td>
+                                  <td>
 
-                                </td>
-                              </tr>
-                            )
-                          })}
+                                  </td>
+                                </tr>
+                              )
+                            })}
 
-                          </tbody>
-                        </table>
-                      </div>
-
+                            </tbody>
+                          </table>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
               </div>
 
+              </div>
             </div>
           </div>
-        </div>
+        }
+
         {showModal ? <EditProductType toggleModal={displayModal} productType={productTypeToEdit}/> : ""}
         {addCatModal ? <AddProductTypeModal toggleModal={displayModal}/> : ""}
         {showCsvModal ? <ProductTypeCsvUpload toggleModal={displayModal}/> : ""}

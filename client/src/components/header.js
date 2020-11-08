@@ -25,30 +25,7 @@ function Header() {
                     id="vertical-menu-btn">
               <i className="fa fa-fw fa-bars"></i>
             </button>
-            <div className="dropdown d-none d-sm-inline-block">
-              <button type="button" className="btn header-item waves-effect" id="page-header-user-dropdown"
-                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i className="mdi mdi-plus"></i> Add New
-                <i className="mdi mdi-chevron-down d-none d-sm-inline-block"></i>
-              </button>
-              <div className="dropdown-menu">
-  
-  
-                <Link to="/add-product" className="dropdown-item notify-item">
-                  Product
-                </Link>
-  
-                
-                <a href="#" onClick={e => { setShowModal(true) }} className="dropdown-item notify-item">
-                  Category
-                </a>
 
-                <a href="#" onClick={e => { setShowProductType(true) }} className="dropdown-item notify-item">
-                  Product Type
-                </a>
-
-              </div>
-            </div>
           </div>
         
           <div className="d-flex align-items-center">
@@ -147,7 +124,7 @@ function Header() {
             <div className="dropdown d-inline-block ml-2">
               <button type="button" className="btn header-item waves-effect" id="page-header-user-dropdown"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img className="rounded-circle header-profile-user" src="./images/users/avatar-3.jpg"
+                <img className="rounded-circle header-profile-user" src="/images/users/avatar-3.jpg"
                      alt="Header Avatar"/>
                   <span className="d-none d-sm-inline-block ml-1">{user.name}</span>
                   <i className="mdi mdi-chevron-down d-none d-sm-inline-block"></i>

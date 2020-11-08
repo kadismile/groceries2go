@@ -7,7 +7,6 @@
 !function (t) {
   "use strict";
   t("#side-menu").metisMenu(), t("#vertical-menu-btn").on("click", function () {
-    console.log("i am here oooooo____");
     t("body").toggleClass("enable-vertical-menu")
   }), t(".menu-overlay").on("click", function () {
     t("body").removeClass("enable-vertical-menu")

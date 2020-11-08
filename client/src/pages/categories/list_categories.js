@@ -6,6 +6,7 @@ import {EditCategories} from "./edit_categories_modal";
 import {EditProductVariant} from "../../components/modals/product_variant/edit_product_variant";
 import {AddGroupModal} from "../../components/modals/add_category";
 import {CategoryCsvUpload} from "./create_categories_csv_modal";
+import {Loader} from "../../components/lib";
 function CategoryList() {
 
   const [categories, setcategories] = useState([]);
@@ -52,7 +53,7 @@ function CategoryList() {
               <div className="row">
                 <div className="col-12">
                   <div className="page-title-box d-flex align-items-center justify-content-between">
-                    <h4 className="mb-0 font-size-18">Products</h4>
+                    <h4 className="mb-0 font-size-18">Categories</h4>
                     <div className="page-title-right">
                       <div className="btn-group" role="group" style={{marginRight: "80px"}}>
                         <button id="btnGroupDrop1" type="button" className="btn btn-outline-secondary dropdown-toggle"
@@ -79,54 +80,57 @@ function CategoryList() {
                 <div className="col-12">
                   <div className="card">
                     <div className="card-body">
-                      <div className="table-responsive">
-                        <table className="table mb-0">
-                          <thead className="thead-light">
-                          <tr role="row">
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '274px'}} aria-sort="ascending"
-                                aria-label="Name: activate to sort column descending">#
-                            </th>
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '274px'}} aria-sort="ascending"
-                                aria-label="Name: activate to sort column descending">Name
-                            </th>
-                            <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                                colSpan={1} style={{width: '397px'}}
-                                aria-label="Position: activate to sort column ascending">Id
-                            </th>
+                        <div className="table-responsive">
+                          {!categories.length ? <Loader /> :
+                          <table className="table mb-0">
+                            <thead className="thead-light">
+                            <tr role="row">
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                  colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                                  aria-label="Name: activate to sort column descending">#
+                              </th>
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                  colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                                  aria-label="Name: activate to sort column descending">Name
+                              </th>
+                              <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                  colSpan={1} style={{width: '397px'}}
+                                  aria-label="Position: activate to sort column ascending">Id
+                              </th>
 
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
-                            </th>
-                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
-                            </th>
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                              </th>
+                              <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                              </th>
 
-                          </tr>
-                          </thead>
-                          <tbody>
-                          {categories.map((cat, index)=> {
-                            return (
-                              <tr key={index}>
-                                <th scope="row">{index+1}</th>
-                                <td>{cat.name}</td>
-                                <td>{cat._id}</td>
-                                <td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {categories.map((cat, index)=> {
+                              return (
+                                <tr key={index}>
+                                  <th scope="row">{index+1}</th>
+                                  <td>{cat.name}</td>
+                                  <td>{cat._id}</td>
+                                  <td>
 
-                                  <a onClick={() => editCategory(index)} style={{color: "#767c82", cursor: "pointer"}}>
-                                    <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
-                                  </a>
+                                    <a onClick={() => editCategory(index)} style={{color: "#767c82", cursor: "pointer"}}>
+                                      <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
+                                    </a>
 
-                                </td>
-                                <td>
+                                  </td>
+                                  <td>
 
-                                </td>
-                              </tr>
-                            )
-                          })}
+                                  </td>
+                                </tr>
+                              )
+                            })}
 
-                          </tbody>
-                        </table>
-                      </div>
+                            </tbody>
+                          </table>
+                          }
+                        </div>
+
 
                     </div>
                   </div>

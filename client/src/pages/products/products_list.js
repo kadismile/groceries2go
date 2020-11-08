@@ -3,6 +3,8 @@ import {getProducts, removeProduct} from "../../utils/auth-client";
 import Swal from "sweetalert2";
 import {Redirect} from "react-router";
 import {ProductCsvUpload} from "../../components/modals/product_csv_upload";
+import {FullPageSpinner, Loader} from "../../components/lib";
+import {Link} from "react-router-dom";
 function ProductList() {
 
   const [products, setProducts] = useState([]);
@@ -12,6 +14,8 @@ function ProductList() {
   const [productId, setProductId] = useState("")
 
   const [showModal, setShowModal] = useState(false);
+
+  const [ids, setIds] = useState([])
 
   useEffect(() => {
     (async function(){
@@ -52,6 +56,25 @@ function ProductList() {
     setShowModal(value)
   };
 
+  const deleteMultipleProduct = async () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You will not be able to recover these selected products !`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete them!',
+      cancelButtonText: 'No, keep them'
+    }).then( async (result) => {
+      if (result.value) {
+        const result = await removeProduct(ids)
+        console.log(result)
+      }
+    })
+  }
+  const thicked = (_id) => {
+    setIds(oldArray => [...oldArray, _id]);
+  }
+
 
   return (
     !productToEdit ?
@@ -72,9 +95,17 @@ function ProductList() {
                     <div className="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
                          style={{position: "absolute", willChange: "transform", top: "0px", left: "-70px", transform: "translate3d(0px, 36px, 0px)"}}>
 
+                      <Link to="/add-product" className="dropdown-item">
+                        Add Product
+                      </Link>
+
                       <a href="#" onClick={e => { setShowModal(true) }} className="dropdown-item">
                         Upload Product Csv
                       </a>
+
+                      { ids.length ? <a href="#" onClick={ e => { deleteMultipleProduct()} } className="dropdown-item">
+                       Delete Selected Product(s)
+                      </a> : ""}
 
                     </div>
                   </div>
@@ -85,60 +116,71 @@ function ProductList() {
           <div className="row">
             <div className="col-12">
               <div className="card">
+
                 <div className="card-body">
-                  <div className="table-responsive">
-                    <table className="table mb-0">
-                      <thead className="thead-light">
-                      <tr role="row">
-                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                            colSpan={1} style={{width: '274px'}} aria-sort="ascending"
-                            aria-label="Name: activate to sort column descending">#
-                        </th>
-                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                            colSpan={1} style={{width: '274px'}} aria-sort="ascending"
-                            aria-label="Name: activate to sort column descending">Name
-                        </th>
-                        <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                            colSpan={1} style={{width: '397px'}}
-                            aria-label="Position: activate to sort column ascending">Product Type
-                        </th>
-                        <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
-                            colSpan={1} style={{width: '202px'}}
-                            aria-label="Office: activate to sort column ascending">Status
-                        </th>
-                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
-                        </th>
-                        <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
-                        </th>
+                  {
+                    !products.length ?  <Loader /> :
+                      <div className="table-responsive">
+                        <table className="table mb-0">
+                          <thead className="thead-light">
+                          <tr role="row">
+                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                            </th>
+                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                                aria-label="Name: activate to sort column descending">#
+                            </th>
+                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                colSpan={1} style={{width: '274px'}} aria-sort="ascending"
+                                aria-label="Name: activate to sort column descending">Name
+                            </th>
+                            <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                colSpan={1} style={{width: '397px'}}
+                                aria-label="Position: activate to sort column ascending">Product Type
+                            </th>
+                            <th className="sorting" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1}
+                                colSpan={1} style={{width: '202px'}}
+                                aria-label="Office: activate to sort column ascending">Status
+                            </th>
+                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                            </th>
+                            <th className="sorting_asc" tabIndex={0} aria-controls="datatable-buttons" rowSpan={1} colSpan={1} style={{width: '10px'}}>
+                            </th>
 
-                      </tr>
-                      </thead>
-                      <tbody>
-                      {products.map((product, index)=> {
-                        return (
-                          <tr key={index}>
-                            <th scope="row">{index+1}</th>
-                            <td>{product.name}</td>
-                            <td>{product.productType}</td>
-                            <td>{product.status}</td>
-                            <td>
-                              <a onClick={() => editProduct(product._id)} style={{color: "#767c82", cursor: "pointer"}}>
-                                <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
-                              </a>
-                            </td>
-                            <td>
-                              <a onClick={()=> deleteProduct(product)} style={{color: "#767c82", cursor: "pointer"}}>
-                                <i className="fa fa-fw fa-trash" data-toggle="tooltip" data-placement="top" title=""data-original-title="remove"></i>
-                              </a>
-                            </td>
                           </tr>
-                        )
-                      })}
+                          </thead>
+                          <tbody>
+                          {products.map((product, index)=> {
+                            return (
+                              <tr key={index}>
+                                <th>
+                                  <div className="custom-control custom-checkbox">
+                                    <input type="checkbox" onClick={() => thicked(product._id)} className="custom-control-input" id={`customCheck1${index}`} />
+                                    <label className="custom-control-label" htmlFor={`customCheck1${index}`}></label>
+                                  </div>
+                                </th>
+                                <th scope="row">{index+1}</th>
+                                <td>{product.name}</td>
+                                <td>{product.productType}</td>
+                                <td>{product.status}</td>
+                                <td>
+                                  <a onClick={() => editProduct(product._id)} style={{color: "#767c82", cursor: "pointer"}}>
+                                    <i className="fa fa-fw fa-edit" data-toggle="tooltip" data-placement="top" title=""data-original-title="edit"></i>
+                                  </a>
+                                </td>
+                                <td>
+                                  <a onClick={()=> deleteProduct(product)} style={{color: "#767c82", cursor: "pointer"}}>
+                                    <i className="fa fa-fw fa-trash" data-toggle="tooltip" data-placement="top" title=""data-original-title="remove"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            )
+                          })}
 
-                      </tbody>
-                    </table>
-                  </div>
-
+                          </tbody>
+                        </table>
+                      </div>
+                  }
                 </div>
               </div>
             </div>
