@@ -56,4 +56,10 @@ ProductSchema.pre("save", async function() {
   await ProductBeforeSave(this)
 });
 
+ProductSchema.statics.Random = async function() {
+  const count = await this.countDocuments();
+  const rand = Math.floor(Math.random() * count);
+  return  await this.find().skip(rand).limit(10);
+};
+
 module.exports = mongoose.model('Product', ProductSchema);

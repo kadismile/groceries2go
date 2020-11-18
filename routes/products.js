@@ -13,6 +13,11 @@ router.post('/upload-product-csv', protect, authorize(permission.USER_PERMISSION
 router.post('/upload-variant-csv', protect, authorize(permission.USER_PERMISSION),productController.uploadVariantCsv);
 router.post('/delete-variant', protect, authorize(permission.USER_PERMISSION),productController.deleteVariant);
 router.post('/update-variant', protect, authorize(permission.USER_PERMISSION),productController.updateVariant);
+router.post('/update-all-variants', protect, authorize(permission.USER_PERMISSION), productController.populateProductVariants);
+
+router.post('/search',productController.searchService);
+
+
 
 
 
@@ -26,5 +31,12 @@ router.post('/product-type/create', protect, authorize(permission.USER_PERMISSIO
 router.get('/product-type', protect, productController.getProductType);
 router.post('/product-type/update', protect, productController.updateProductType);
 router.post('/upload-product-type-csv', protect, authorize(permission.USER_PERMISSION),productController.uploadProductTypeCsv);
+
+
+/*MobileApp Api's*/
+router.get('/get-random-products',productController.getRandomProducts);
+router.get('/product-category/:categoryId',productController.getProductVariants);
+router.get('/product-variant/:productId',productController.getVariants);
+router.get('/variant/:variantId',productController.getVariantsById);
 
 module.exports = router;

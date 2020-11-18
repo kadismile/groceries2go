@@ -24,6 +24,8 @@ app.use('/api/v1/church', require('./routes/church'));
 app.use('/api/v1/webhook', require('./routes/webhook'));
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/products', require('./routes/products'));
+app.use('/api/mobile/products', require('./routes/products'));
+app.use('/api/v1/orders', require('./routes/orders'));
 
 
 io.on('connection', (socket) => {

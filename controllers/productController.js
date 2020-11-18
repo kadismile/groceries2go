@@ -1,4 +1,5 @@
 const fs = require('fs')
+const MongoClient = require('mongodb').MongoClient;
 const randomstring = require("randomstring");
 const {errorHandler} = require("../utils/errors");
 const Product = require('../models/Product');
@@ -10,6 +11,7 @@ const kue = require('kue');
 const path = require("path");
 const multer = require("multer");
 const CSVToJSON = require('csvtojson');
+const field = require('../utils/fields')
 
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -450,4 +452,160 @@ exports.uploadProductTypeCsv = async (req, res) => {
 
 };
 
+/*#### MOBILE_APP API's
+* #######################
+* */
+
+exports.getRandomProducts = async (req, res) => {
+  try {
+    const products = await ProductVariant.Random()
+    res.status(200).json({
+      status: "success",
+      data: products
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+};
+
+exports.getProductVariants = async (req, res) => {
+  let productTypeId = req.params.categoryId
+  try {
+    const products = await ProductVariant.find({productTypeId}).limit(25)
+    res.status(200).json({
+      status: "success",
+      data: products
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+};
+
+exports.getVariants = async (req, res) => {
+  try {
+    const productId = req.params.productId
+    console.log(productId)
+    const product = await Product.findOne({ _id: productId})
+    const productVariants = await ProductVariant.find({productId: product._id})
+
+    res.status(200).json({
+      status: "success",
+      data: {...product._doc, productVariants}
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+};
+
+exports.getVariantsById = async (req, res) => {
+  try {
+    const variantId = req.params.variantId
+    const productVariant = await ProductVariant.findOne({_id: variantId})
+    let productVariants
+    let XproductVariants
+    if (productVariant) {
+      productVariants = await ProductVariant.find({ productId: productVariant.productId})
+      XproductVariants = productVariants.filter((variant) => variant._id !== variantId)
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {...productVariant._doc, productVariants: XproductVariants}
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+};
+
+exports.searchService = async (req, res) => {
+
+  const client = new MongoClient(process.env.DB_CONNECTION, {
+    useUnifiedTopology: true,
+  });
+
+  const doc = req.body
+  let query = doc.query
+  let type = doc.type
+  let searchTerm = doc.searchTerm
+  let limit = 50;
+  if (query.limit ) {
+    limit = parseInt(limit, 10);
+    delete query.limit
+  }
+
+  try {
+    await client.connect();
+    const db = await client.db("groceries2g0");
+    const fields = field[type] || [];
+
+    let method;
+    if (!isPhone(searchTerm) && !(/^[a-zA-Z]+$/).test(Number(searchTerm)) || ifNumberSearch(searchTerm) ) {
+      method = {
+        near: {
+          path: fields,
+          origin: Number(searchTerm),
+          "pivot": 2
+        }
+      };
+    } else {
+      method = {
+        text: {
+          query: searchTerm,
+          path: fields,
+          fuzzy: { maxEdits: 2, prefixLength: 2 },
+          score: {boost: { value: 2 },},
+        },
+      }
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: await db
+        .collection(`${type}`)
+        .aggregate([
+          {
+            '$search': {
+              ...method
+            }
+          },
+          { $match: query },
+          {
+            $limit: limit
+          },
+        ])
+        .toArray()
+    })
+
+  } catch (error) {
+    console.log("An error fetching", error.message);
+  }
+}
+
+exports.populateProductVariants = async (req, res) => {
+  let productVariants = await ProductVariant.find({})
+  productVariants.forEach( async (pV)=> {
+    let productId = pV.productId
+    let product = await Product.findOne({ _id: productId, productType: {$exists: true} })
+    if (product) {
+      pV.productType = product.productType
+      pV.productTypeId = product.productTypeId
+      await ProductVariant.findByIdAndUpdate(pV._id, pV)
+      if (pV.productType) {
+        console.log("PV ",  await ProductVariant.findOne({_id: pV._id}))
+      }
+    }
+  })
+}
+
+function isPhone(searchTerm) {
+  return searchTerm.length > 10 && (/^[+]?[\s./0-9]*[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/g).test(searchTerm);
+}
+
+function ifNumberSearch(searchTerm) {
+  return /^\d+$/.test(searchTerm)
+}
 
