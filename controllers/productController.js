@@ -521,6 +521,20 @@ exports.getVariantsById = async (req, res) => {
   }
 };
 
+exports.getProductsByTypeId = async (req, res) => {
+  try {
+    const productTypeId = req.params.productTypeId
+    const product = await Product.find({productTypeId}).limit(10)
+    res.status(200).json({
+      status: "success",
+      data: product
+    })
+  } catch (e) {
+    console.log(`${e}`.red);
+    errorHandler(e, res);
+  }
+};
+
 exports.searchService = async (req, res) => {
 
   const client = new MongoClient(process.env.DB_CONNECTION, {
