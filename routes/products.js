@@ -38,5 +38,6 @@ router.get('/get-random-products',productController.getRandomProducts);
 router.get('/product-category/:categoryId',productController.getProductVariants);
 router.get('/product-variant/:productId',productController.getVariants);
 router.get('/variant/:variantId',productController.getVariantsById);
+router.get('/product-type/:productTypeId',productController.getProductsByTypeId);
 
 module.exports = router;

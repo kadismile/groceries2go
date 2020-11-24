@@ -161,6 +161,47 @@ exports.resetPassword = async (req, res, next) => {
   });
 };
 
+exports.authMobileLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(403).json({
+      type: "login",
+      status: "failed",
+      data: "Please provide an email and password"
+    });
+  }
+
+  try {
+    const user = await User.findOne({ email }).select('+password');
+    if (user === null) {
+      res.status(401).json({
+        type: "login",
+        statusCode: 401,
+        data: "Invalid credentials"
+      });
+    }
+
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch) {
+      res.status(401).json({
+        type: "login",
+        status: "failed",
+        data: "Invalid credentials"
+      });
+    } else {
+
+      res.status(200).json({
+        status: 'success',
+        data: user
+      });
+    }
+  } catch (e) {
+    return errorHandler(e, res);
+  }
+};
+
 
 const sendTokenResponse = async(user, statusCode, res) => {
   // Create token

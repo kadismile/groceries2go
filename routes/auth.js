@@ -13,4 +13,7 @@ router.put('/resetpassword/:resettoken', authController.resetPassword);
 
 router.post('/login', authController.authLogin);
 
+router.post('/mobile/login', authController.authMobileLogin);
+
+
 module.exports = router;
