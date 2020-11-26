@@ -530,7 +530,7 @@ exports.getProductsByTypeId = async (req, res) => {
       data: product
     })
   } catch (e) {
-    console.log(`${e}`.red);
+    /*console.log(`${e}`.red);*/
     errorHandler(e, res);
   }
 };
