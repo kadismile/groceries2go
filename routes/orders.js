@@ -5,5 +5,6 @@ const permission =  require("../config/permissions");
 
 
 router.post('/create', orderController.createOrder);
+router.post('/user-orders', orderController.getUserOrders);
 
 module.exports = router;
