@@ -70,10 +70,9 @@ exports.addProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
-    const product = await Product.find()/*.select('name -_id');*/
     res.status(200).json({
       status: "success",
-      data: product
+      data: res.advancedResults.data
     })
   } catch (e) {
     console.log(`${e}`.red);
@@ -256,10 +255,9 @@ exports.createCategory = async (req, res) => {
 
 exports.getCategory = async (req, res) => {
   try {
-    const category = await Category.find()/*.select('name -_id')*/;
     res.status(200).json({
       status: "success",
-      data: category
+      data: res.advancedResults.data
     })
   } catch (e) {
     console.log(`${e}`.red);
