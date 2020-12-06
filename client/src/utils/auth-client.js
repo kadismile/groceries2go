@@ -34,12 +34,12 @@ function getUser() {
     }
   })
 }
-function getCategory() {
+function getCategory(page) {
   const token = getToken();
   if (!token) {
     return Promise.resolve(null)
   }
-  return client(`${url.BASE_URL}/products/category`).then(data => data)
+  return client(`${url.BASE_URL}/products/category?page=${page}`).then(data => data)
 }
 function createCategory(data) {
   const token = getToken();
@@ -145,12 +145,12 @@ function updateVariant(data) {
   }
   return client(`${url.BASE_URL}/products/update-variant`, {data}).then(data => data)
 }
-function getProducts() {
+function getProducts(page) {
   const token = getToken();
   if (!token) {
     return Promise.resolve(null)
   }
-  return client(`${url.BASE_URL}/products/`).then(data => data)
+  return client(`${url.BASE_URL}/products?page=${page}`).then(data => data)
 }
 function removeProduct(data) {
   const token = getToken();

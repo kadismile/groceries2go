@@ -11,6 +11,8 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
   //finding the resource
+  console.log(" queryStr ____", queryStr)
+
   query = model.find(JSON.parse(queryStr));
 
   //select fields
@@ -32,7 +34,7 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   const startIndex = (page - 1) * limit; //
   const endIndex = page * limit;
   const total = await model.countDocuments();
-
+  query = model.find();
   query = query.skip(startIndex).limit(limit);
 
   if (populate) {
@@ -55,6 +57,8 @@ const advancedResults = (model, populate) => async (req, res, next) => {
       limit
     };
   }
+
+  console.log("results ____", results)
 
   res.advancedResults = {
     success: true,

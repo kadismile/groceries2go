@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getCategory, removeProduct} from "../../utils/auth-client";
+import {getCategory, getProducts, removeProduct} from "../../utils/auth-client";
 import Swal from "sweetalert2";
 import {Redirect} from "react-router";
 import {EditCategories} from "./edit_categories_modal";
@@ -9,7 +9,10 @@ import {CategoryCsvUpload} from "./create_categories_csv_modal";
 import {Loader} from "../../components/lib";
 function CategoryList() {
 
+  const $ = window.jQuery
   const [categories, setcategories] = useState([]);
+
+  let [page, setPage] = useState(1);
 
   const [categoryToEdit, setcategoryToEdit] = useState("")
 
@@ -21,7 +24,7 @@ function CategoryList() {
 
   useEffect(() => {
     (async function(){
-      const {data} = await getCategory()
+      const {data} = await getCategory(1)
       setcategories(data)
       const table = document.getElementById('datatable-buttons');
       if (table) {
@@ -30,6 +33,29 @@ function CategoryList() {
         });
         window.$('input[type=search]').addClass('form-control');
       }
+
+      let newPage = page;
+      let newData = data
+      const scrollHandler = async (e) => {
+        let threshold, target = $("#showMoreResults");
+        if (!target.length) return;
+        threshold = $(window).scrollTop() + $(window).height() - target.height();
+        if (target.offset().top < threshold) {
+          if (!target.data("visible")) {
+            target.data("visible", true);
+            newPage += 1;
+            setPage(newPage)
+            const {data} = await getCategory(newPage)
+            newData = [...newData, ...data]
+            setcategories(newData)
+          }
+        } else {
+          if (target.data("visible")) {
+            target.data("visible", false);
+          }
+        }
+      };
+      $(window).on('scroll', scrollHandler);
     })()
   }, [showModal, addCatModal])
 
@@ -125,7 +151,7 @@ function CategoryList() {
                                 </tr>
                               )
                             })}
-
+                            <div id="showMoreResults"> </div>
                             </tbody>
                           </table>
                           }
